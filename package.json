@@ -8,9 +8,14 @@
     "start": "next start"
   },
   "dependencies": {
+    "@types/next-auth": "^3.1.18",
+    "mongoose": "^5.11.9",
     "next": "10.0.4",
+    "next-auth": "^3.1.0",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "0.2.28"
   },
   "devDependencies": {
     "@types/node": "^14.14.16",
