@@ -24,3 +24,5 @@ npm run dev
 https://blog.logrocket.com/using-authentication-in-next-js/
 
 -- https://github.com/nextauthjs/next-auth/issues/833
+
+-- https://next-auth.js.org/tutorials/securing-pages-and-api-routes
