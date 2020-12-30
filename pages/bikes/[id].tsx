@@ -1,23 +1,15 @@
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
-import Grid from '@material-ui/core/Grid';
-import DateFnsUtils from '@date-io/date-fns';
-import Paper from '@material-ui/core/Paper';
-
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import { makeStyles } from '@material-ui/core/styles';
 
 import React from 'react';
+import Grid from '@material-ui/core/Grid';
 import { Box, Button, Typography } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import { columnsTotalWidthSelector } from '@material-ui/data-grid';
+import Image from 'material-ui-image';
+import Rating from '@material-ui/lab/Rating';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import ColorLensIcon from '@material-ui/icons/ColorLens';
+
+import BikeDatepicker from "../../components/Datepicker/Datepicker";
+import BikeTimePicker from "../../components/TimePicker/TimePicker";
 
 const bikeModel = {
   id: 1,
@@ -27,53 +19,10 @@ const bikeModel = {
   rating: 3.2,
 };
 
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-  menuPaper: {
-    maxHeight: 300
-  }
-}));
+const disabledDates = [
+  "Wed Dec 30 2020", "Mon Dec 14 2020"
+];
 
-
-const BikeDatepicker = ({initialDate, onDateChange, label="", dateFormat="MM/dd/yyyy"}) => {
-
-  const [selectedDate, setSelectedDate] = React.useState(initialDate || new Date());
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    onDateChange(date)
-  }
-  const disabledDates = [
-    "Wed Dec 30 2020", "Mon Dec 14 2020"
-  ];
-  const disabledDays = (date: Date) => {
-    const dateString = date.toDateString();
-    return disabledDates.includes(dateString);
-
-  }
-  return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <KeyboardDatePicker
-        margin="normal"
-        // id="date-picker-dialog"
-        label={label}
-        shouldDisableDate={disabledDays}
-        format={dateFormat}
-        value={selectedDate}
-        onChange={handleDateChange}
-        KeyboardButtonProps={{
-          'aria-label': 'change date',
-        }}
-      />
-    </MuiPickersUtilsProvider>
-  )
-}
 
 const addDateOneDay = (date: Date) => {
   console.log("date: ", date)
@@ -138,12 +87,6 @@ const Bike = () => {
   
   }
 
-  const classes = useStyles();
-
-  const hours = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]
-  const minutes = ["00", "15", "30", "45"]
-
-  
   return (
     <>
       {error && <Alert severity="error">
@@ -157,107 +100,82 @@ const Bike = () => {
           </Typography>
           <BikeDatepicker 
             initialDate={pickupDate} 
-            onDateChange={handleDropoffDateChange}
+            onDateChange={handlePickupDateChange}
+            disabledDates={disabledDates}
           />
-          <Box>
-            <FormControl variant="filled" className={classes.formControl}>
-              <Select
-                labelId="demo-simple-select-filled-label"
-                value={pickupHour}
-                onChange={
-                  (event: React.ChangeEvent<{ value: unknown }>) => 
-                    setPickupHour(event.target.value as string)
-                }
-                MenuProps={{ classes: { paper: classes.menuPaper } }}
-              >
-                {hours && hours.map(h =>
-                  <MenuItem value={h} key={h}>{h}</MenuItem>
-                )}
-              </Select>
-            </FormControl>
-
-            <FormControl variant="filled" className={classes.formControl}>
-              <Select
-                labelId="demo-simple-select-filled-label"
-                value={pickupMinute}
-                onChange={(event: React.ChangeEvent<{ value: string }>) => {
-                  setPickupMinute(event.target.value)
-                }}
-                MenuProps={{ classes: { paper: classes.menuPaper } }}
-              >
-                {minutes && minutes.map(m =>
-                  <MenuItem value={m} key={m}>{m}</MenuItem>
-                )}
-              </Select>
-            </FormControl>
-          </Box>
+          <BikeTimePicker 
+            hour={pickupHour} 
+            minute={pickupMinute} 
+            onHourChange={setPickupHour}
+            onMinuteChange={setPickupMinute}
+          />
         </Box>
         <Box>
           <Typography variant="body2" color="textSecondary">
             Drop-off Date
           </Typography>
-          <BikeDatepicker initialDate={dropoffDate} onDateChange={handlePickupDateChange}/>
-          <Box>       
-            <FormControl variant="filled" className={classes.formControl}>
-              <Select
-                labelId="demo-simple-select-filled-label"
-                value={dropoffHour}
-                onChange={
-                  (event: React.ChangeEvent<{ value: unknown }>) => 
-                    setDropoffHour(event.target.value as string)
-                }
-                MenuProps={{ classes: { paper: classes.menuPaper } }}
-              >
-                {hours && hours.map(h =>
-                  <MenuItem value={h} key={h}>{h}</MenuItem>
-                )}
-              </Select>
-            </FormControl>
-
-            <FormControl variant="filled" className={classes.formControl}>
-              <Select
-                labelId="demo-simple-select-filled-label"
-                value={dropoffMinute}
-                onChange={(event: React.ChangeEvent<{ value: string }>) => {
-                  setDropoffMinute(event.target.value)
-                }}
-                MenuProps={{ classes: { paper: classes.menuPaper } }}
-              >
-                {minutes && minutes.map(m =>
-                  <MenuItem value={m} key={m}>{m}</MenuItem>
-                )}
-              </Select>
-            </FormControl>
-          </Box>
+          <BikeDatepicker 
+            initialDate={dropoffDate} 
+            onDateChange={handleDropoffDateChange}
+            disabledDates={disabledDates}
+          />
+          <BikeTimePicker 
+            hour={dropoffHour} 
+            minute={dropoffMinute} 
+            onHourChange={setDropoffHour}
+            onMinuteChange={setDropoffMinute}
+          />
         </Box>
-        <Grid
+        {/* <Grid
           container
           direction="row"
           justify="flex-end"
           alignItems="center"
         >
-          {/* <Grid item xs={12}> */}
-            <Button variant="contained" color="primary" onClick={onBookingHandler}
-              //  onClick={(event: React.MouseEvent) => {
-              //   onBookingHandler(event)
-              // }}
-            >
+          <Button variant="contained" color="primary" onClick={onBookingHandler}>
+            Book
+          </Button>
+        </Grid> */}
+       
+        <Grid
+          container
+          direction="column"
+          style={{marginTop: "120px"}}
+          // justify="flex-start"
+          // alignItems="center"
+        >
+          <Box display="flex" flexDirection="row" justifyContent="space-between">
+            <Box>
+              <Typography variant="body2" color="textSecondary" component="p">
+              Orbea TC-4W
+              </Typography>
+              <Box display="flex" flexDirection="row">
+                {/* <ColorLensIcon /> */}
+                <Typography variant="body1" color="textSecondary" component="h3">
+                  Black
+                </Typography>
+              </Box>
+              <Rating name="read-only" value={4} readOnly />
+            </Box>
+            <Button variant="contained" color="primary" onClick={onBookingHandler}>
               Book
             </Button>
-          {/* </Grid> */}
-
+          </Box>
+          <Box display="flex" flexDirection="row">
+            <LocationOnIcon/>
+            <Typography variant="body1" color="textSecondary" component="h3">
+              A Coruña
+            </Typography>
+          </Box>
+          {/* <Image src="/static/images/bike1.jpg" imageStyle={{width: "200px", height: "200px"}}/> */}
+          <Image src="/static/images/bike1.jpg" style={{maxWidth: "1000px"}}/>
+          <Typography variant="body2" color="textSecondary" component="p">
+             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo rem, ipsum sed magnam consectetur reiciendis doloremque eum nesciunt necessitatibus voluptatem repudiandae doloribus saepe, minus ut! Non officiis repellat asperiores vero?
+          </Typography>
         </Grid>
-        <Box>
-          <div>Image</div>
-          <div>model</div>
-          <div>color </div>
-          <div>rating</div>
-        </Box>
     </Grid>
   </>
   )
 };
-
-
 
 export default Bike;
