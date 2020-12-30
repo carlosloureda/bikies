@@ -6,10 +6,8 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import Image from 'material-ui-image';
 import Rating from '@material-ui/lab/Rating';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
-import ColorLensIcon from '@material-ui/icons/ColorLens';
 
-import BikeDatepicker from "../../components/Datepicker/Datepicker";
-import BikeTimePicker from "../../components/TimePicker/TimePicker";
+import DatetimeSearch from "../../components/DatetimeSearch/DatetimeSearch";
 
 const bikeModel = {
   id: 1,
@@ -25,9 +23,7 @@ const disabledDates = [
 
 
 const addDateOneDay = (date: Date) => {
-  console.log("date: ", date)
   const dateCp = new Date(date)
-  console.log("dateCp: ", dateCp)
   dateCp.setDate(dateCp.getDate() + 1); 
   return dateCp
 };
@@ -35,51 +31,21 @@ const addDateOneDay = (date: Date) => {
 const Bike = () => {
   const today = new Date()
   const tomorrowDate = addDateOneDay(today);
-  console.log("-- tomorrowDate: ", tomorrowDate)
-  
   const [pickupDate, setPickupDate] = React.useState(tomorrowDate);
   const [dropoffDate, setDropoffDate] = React.useState(addDateOneDay(tomorrowDate));
-
-  console.log("-- pickupDate: ", pickupDate)
-  console.log("-- dropoffDate: ", dropoffDate)
-  const [pickupHour, setPickupHour] = React.useState("10");
-  const [pickupMinute, setPickupMinute] = React.useState("00");
-
-  const [dropoffHour, setDropoffHour] = React.useState("10");
-  const [dropoffMinute, setDropoffMinute] = React.useState("00");
-
   const [error, setError] = React.useState(null);
-  
-  const handlePickupDateChange = (date) => {
-    setPickupDate(date);
-  };
-
-  const handleDropoffDateChange = (date) => {
-    setDropoffDate(date);
-  };
 
   const onBookingHandler = () => {
     setError(null)
-    if (!pickupDate || !pickupHour || !pickupMinute) {
+    if (!pickupDate) {
       return setError("Select date and time for pickup")
-    } else if (!dropoffDate || !dropoffHour || !dropoffMinute) {
+    } else if (!dropoffDate) {
       return setError("Select date and time for drop off")
     }
-    let pickupDateTmp = pickupDate;
-    pickupDateTmp.setHours(parseInt(pickupHour));
-    pickupDateTmp.setMinutes(parseInt(pickupMinute));
-    pickupDateTmp.setSeconds(0);
-
-    let dropoffDateTmp = dropoffDate;
-    dropoffDateTmp.setHours(parseInt(dropoffHour));
-    dropoffDateTmp.setMinutes(parseInt(dropoffMinute));
-    dropoffDateTmp.setSeconds(0);
     
-    if (pickupDateTmp >= dropoffDateTmp) {
+    if (pickupDate >= dropoffDate) {
       return setError("drop off date should be later than pickup ")
     }
-    setPickupDate(pickupDateTmp);
-    setDropoffDate(dropoffDateTmp);
 
     console.log(`--> ${pickupDate} - ${dropoffDate}`)
     // TODO: finish booking on backend
@@ -94,48 +60,13 @@ const Bike = () => {
         {error}
       </Alert>}
       <Grid container justify="space-between" style={{width: "50%", margin: "0 auto"}}>
-        <Box>
-          <Typography variant="body2" color="textSecondary">
-            Pick-up Date
-          </Typography>
-          <BikeDatepicker 
-            initialDate={pickupDate} 
-            onDateChange={handlePickupDateChange}
-            disabledDates={disabledDates}
-          />
-          <BikeTimePicker 
-            hour={pickupHour} 
-            minute={pickupMinute} 
-            onHourChange={setPickupHour}
-            onMinuteChange={setPickupMinute}
-          />
-        </Box>
-        <Box>
-          <Typography variant="body2" color="textSecondary">
-            Drop-off Date
-          </Typography>
-          <BikeDatepicker 
-            initialDate={dropoffDate} 
-            onDateChange={handleDropoffDateChange}
-            disabledDates={disabledDates}
-          />
-          <BikeTimePicker 
-            hour={dropoffHour} 
-            minute={dropoffMinute} 
-            onHourChange={setDropoffHour}
-            onMinuteChange={setDropoffMinute}
-          />
-        </Box>
-        {/* <Grid
-          container
-          direction="row"
-          justify="flex-end"
-          alignItems="center"
-        >
-          <Button variant="contained" color="primary" onClick={onBookingHandler}>
-            Book
-          </Button>
-        </Grid> */}
+        <DatetimeSearch 
+          pickupDate={pickupDate}
+          setPickupDate={setPickupDate} 
+          dropoffDate={dropoffDate} 
+          setDropoffDate={setDropoffDate} 
+          disabledDates={disabledDates}
+        />
        
         <Grid
           container
@@ -164,7 +95,7 @@ const Bike = () => {
           <Box display="flex" flexDirection="row">
             <LocationOnIcon/>
             <Typography variant="body1" color="textSecondary" component="h3">
-              A Coruña
+              A Coruña.
             </Typography>
           </Box>
           {/* <Image src="/static/images/bike1.jpg" imageStyle={{width: "200px", height: "200px"}}/> */}
