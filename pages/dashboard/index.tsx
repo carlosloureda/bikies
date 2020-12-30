@@ -1,10 +1,21 @@
+import React from "react";
 import Navbar from "./../../components/Navbar/Navbar"
+import DrawerMenu from "./../../components/DrawerMenu/DrawerMenu"
 
 const Dashboard = () => {
+    const [openMenu, setOpenMenu] = React.useState(false);
+
+    const onToggleMenu = () => {
+        setOpenMenu(!openMenu);
+    }
+
     return (
         <div>
-            <Navbar></Navbar>
-            <h1>holas</h1>
+            <Navbar openDrawerHandler={onToggleMenu}></Navbar>
+            <DrawerMenu
+                open={openMenu}
+                toggleDrawerHandler={onToggleMenu}
+            />
         </div>
     )
 }
