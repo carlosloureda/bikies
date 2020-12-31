@@ -7,11 +7,13 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider
+  Divider, 
+  Link
 } from "@material-ui/core";
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import PeopleIcon from '@material-ui/icons/People';
 import DirectionsBikeIcon from '@material-ui/icons/DirectionsBike';
+import { useRouter } from 'next/router';
 
 const styles = theme => ({
   list: {
@@ -24,6 +26,14 @@ const styles = theme => ({
 
 
 const DrawerMenu = ({open, toggleDrawerHandler, classes}) => {
+
+    const router = useRouter();
+
+    const goTo = (url) => {
+        console.log("url: ", url)
+        router.push(url)
+    }
+
     const sideList = side => (
       <div
         className={classes.list}
@@ -46,19 +56,19 @@ const DrawerMenu = ({open, toggleDrawerHandler, classes}) => {
         </Typography>
         <Divider />
         <List>
-            <ListItem button>
-              <ListItemIcon>
-                <PeopleIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Users"} />
+            <ListItem button onClick={() => goTo('/dashboard/users')}>
+                <ListItemIcon>
+                    <PeopleIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Users"} />
             </ListItem>
-            <ListItem button>
+            <ListItem button onClick={() => goTo('/dashboard/bikes')}>
               <ListItemIcon>
                 <DirectionsBikeIcon />
               </ListItemIcon>
               <ListItemText primary={"Bikes"} />
             </ListItem>
-            <ListItem button>
+            <ListItem button onClick={() => goTo('/dashboard/bookings')}>
               <ListItemIcon>
                 <ConfirmationNumberIcon />
               </ListItemIcon>

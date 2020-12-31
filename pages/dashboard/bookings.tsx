@@ -11,11 +11,7 @@ const Dashboard = () => {
 
     return (
         <AdminDashboard>
-
-            <div>
-                Holas
-            </div>
-            <h1>Pedo</h1>
+            <h1>Bookings</h1>
         </AdminDashboard>
     )
 }
