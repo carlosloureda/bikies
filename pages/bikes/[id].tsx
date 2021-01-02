@@ -5,6 +5,7 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import Image from 'material-ui-image';
 import Rating from '@material-ui/lab/Rating';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
+import { makeStyles } from '@material-ui/core/styles';
 
 import DatetimeSearch from '../../components/DatetimeSearch/DatetimeSearch';
 
@@ -24,6 +25,29 @@ const addDateOneDay = (date: Date) => {
   return dateCp;
 };
 
+const useStyles = makeStyles((theme) => ({
+  dateSearch: {
+    backgroundColor: '#835990',
+    padding: '3rem 2rem',
+  },
+  bikeContainer: {
+    marginTop: '1rem',
+  },
+  info: {
+    padding: '1rem 1rem',
+  },
+  bookButton: {
+    paddingRight: '1rem',
+  },
+  imageContainer: {
+    margin: '0 auto',
+  },
+  description: {
+    padding: '3rem 2rem',
+    marginBottom: '25px',
+  },
+}));
+
 const Bike = () => {
   const today = new Date();
   const tomorrowDate = addDateOneDay(today);
@@ -32,6 +56,8 @@ const Bike = () => {
     addDateOneDay(tomorrowDate)
   );
   const [error, setError] = React.useState(null);
+
+  const classes = useStyles();
 
   const onBookingHandler = () => {
     setError(null);
@@ -64,12 +90,8 @@ const Bike = () => {
           lg={8}
           sm={8}
           xs={12}
-          style={{
-            backgroundColor: '#835990',
-            padding: '3rem 2rem',
-            // marginBottom: '2rem',
-          }}
           justify="flex-start"
+          className={classes.dateSearch}
         >
           <DatetimeSearch
             pickupDate={pickupDate}
@@ -80,34 +102,39 @@ const Bike = () => {
           />
         </Grid>
 
-        <Grid
-          item
-          // direction="column"
-          style={{ marginTop: '1rem', backgroundColor: 'blue' }}
-          // justify="flex-start"
-          // alignItems="center"
-        >
-          <Box
-            display="flex"
-            flexDirection="row"
-            justifyContent="space-between"
+        <Grid item container className={classes.bikeContainer} justify="center">
+          <Grid
+            item
+            xs={9}
+            className={classes.info}
+            // style={{
+            //   padding: '1rem 1rem',
+            //   // backgroundColor: 'yellow',
+            //   // paddingLeft: '1rem',
+            // }}
           >
-            <Box>
-              <Typography variant="body2" color="textSecondary" component="p">
-                Orbea TC-4W
+            <Typography variant="subtitle1" color="textSecondary">
+              Orbea TC-4W
+            </Typography>
+            <Typography variant="body1" color="textSecondary" gutterBottom>
+              Black
+            </Typography>
+            <Rating name="read-only" value={4} readOnly />
+            <Box display="flex" flexDirection="row">
+              <LocationOnIcon />
+              <Typography variant="body1" color="textSecondary" component="h3">
+                A Coruña.
               </Typography>
-              <Box display="flex" flexDirection="row">
-                {/* <ColorLensIcon /> */}
-                <Typography
-                  variant="body1"
-                  color="textSecondary"
-                  component="h3"
-                >
-                  Black
-                </Typography>
-              </Box>
-              <Rating name="read-only" value={4} readOnly />
             </Box>
+          </Grid>
+          <Grid
+            item
+            xs={3}
+            container
+            alignContent="center"
+            justify="flex-end"
+            className={classes.bookButton}
+          >
             <Button
               variant="contained"
               color="primary"
@@ -115,24 +142,24 @@ const Bike = () => {
             >
               Book
             </Button>
-          </Box>
-          <Box display="flex" flexDirection="row">
-            <LocationOnIcon />
-            <Typography variant="body1" color="textSecondary" component="h3">
-              A Coruña.
+          </Grid>
+          <Grid
+            item
+            xs={6}
+            alignContent="center"
+            justify="center"
+            className={classes.imageContainer}
+          >
+            <Image src="/static/images/bike1.jpg" />
+          </Grid>
+          <Grid item xs={9} className={classes.description}>
+            <Typography variant="body2" color="textSecondary" component="p">
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+              Explicabo rem, ipsum sed magnam consectetur reiciendis doloremque
+              eum nesciunt necessitatibus voluptatem repudiandae doloribus
+              saepe, minus ut! Non officiis repellat asperiores vero?
             </Typography>
-          </Box>
-          {/* <Image src="/static/images/bike1.jpg" imageStyle={{width: "200px", height: "200px"}}/> */}
-          <Image
-            src="/static/images/bike1.jpg"
-            style={{ maxWidth: '1000px' }}
-          />
-          <Typography variant="body2" color="textSecondary" component="p">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo
-            rem, ipsum sed magnam consectetur reiciendis doloremque eum nesciunt
-            necessitatibus voluptatem repudiandae doloribus saepe, minus ut! Non
-            officiis repellat asperiores vero?
-          </Typography>
+          </Grid>
         </Grid>
       </Grid>
     </Box>

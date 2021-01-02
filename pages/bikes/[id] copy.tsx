@@ -1,0 +1,152 @@
+import React from 'react';
+import Grid from '@material-ui/core/Grid';
+import { Box, Button, Typography } from '@material-ui/core';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import Image from 'material-ui-image';
+import Rating from '@material-ui/lab/Rating';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+
+import DatetimeSearch from '../../components/DatetimeSearch/DatetimeSearch';
+
+const bikeModel = {
+  id: 1,
+  model: 'bmw',
+  color: 'red',
+  location: 'A Coruña',
+  rating: 3.2,
+};
+
+const disabledDates = ['Wed Dec 30 2020', 'Mon Dec 14 2020'];
+
+const addDateOneDay = (date: Date) => {
+  const dateCp = new Date(date);
+  dateCp.setDate(dateCp.getDate() + 1);
+  return dateCp;
+};
+
+const Bike = () => {
+  const today = new Date();
+  const tomorrowDate = addDateOneDay(today);
+  const [pickupDate, setPickupDate] = React.useState(tomorrowDate);
+  const [dropoffDate, setDropoffDate] = React.useState(
+    addDateOneDay(tomorrowDate)
+  );
+  const [error, setError] = React.useState(null);
+
+  const onBookingHandler = () => {
+    setError(null);
+    if (!pickupDate) {
+      return setError('Select date and time for pickup');
+    } else if (!dropoffDate) {
+      return setError('Select date and time for drop off');
+    }
+
+    if (pickupDate >= dropoffDate) {
+      return setError('drop off date should be later than pickup ');
+    }
+
+    console.log(`--> ${pickupDate} - ${dropoffDate}`);
+    // TODO: finish booking on backend
+    // TODO: redirect to profile page
+  };
+
+  return (
+    <Box>
+      {error && (
+        <Alert severity="error">
+          <AlertTitle>Error</AlertTitle>
+          {error}
+        </Alert>
+      )}
+      <Grid container justify="space-around">
+        <Grid
+          item
+          lg={8}
+          sm={8}
+          xs={12}
+          style={{
+            backgroundColor: '#835990',
+            padding: '3rem 2rem',
+            // marginBottom: '2rem',
+          }}
+          justify="flex-start"
+        >
+          <DatetimeSearch
+            pickupDate={pickupDate}
+            setPickupDate={setPickupDate}
+            dropoffDate={dropoffDate}
+            setDropoffDate={setDropoffDate}
+            disabledDates={disabledDates}
+          />
+        </Grid>
+
+        <Grid
+          item
+          // direction="column"
+          style={{ marginTop: '1rem', backgroundColor: 'blue' }}
+          // justify="flex-start"
+          // alignItems="center"
+        >
+          <Grid
+            container
+            justify="space-between"
+            // display="flex"
+            // flexDirection="row"
+            // justifyContent="space-between"
+          >
+            {/* model, color y rating */}
+            <Grid item>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Orbea TC-4W
+              </Typography>
+              <Box display="flex" flexDirection="row">
+                {/* <ColorLensIcon /> */}
+                <Typography
+                  variant="body1"
+                  color="textSecondary"
+                  component="h3"
+                >
+                  Black
+                </Typography>
+              </Box>
+              <Rating name="read-only" value={4} readOnly />
+            </Grid>
+            {/* book button */}
+            <Grid item alignContent="center">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={onBookingHandler}
+              >
+                Book
+              </Button>
+            </Grid>
+          </Grid>
+          {/* Location */}
+          <Box display="flex" flexDirection="row">
+            <LocationOnIcon />
+            <Typography variant="body1" color="textSecondary" component="h3">
+              A Coruña.
+            </Typography>
+          </Box>
+          {/* <Image src="/static/images/bike1.jpg" imageStyle={{width: "200px", height: "200px"}}/> */}
+          {/* Image */}
+
+          <Image
+            src="/static/images/bike1.jpg"
+            style={{ maxWidth: '1000px' }}
+          />
+          {/* Description */}
+          <Typography variant="body2" color="textSecondary" component="p">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo
+            rem, ipsum sed magnam consectetur reiciendis doloremque eum nesciunt
+            necessitatibus voluptatem repudiandae doloribus saepe, minus ut! Non
+            officiis repellat asperiores vero?
+          </Typography>
+        </Grid>
+      </Grid>
+    </Box>
+  );
+};
+
+export default Bike;
