@@ -1,5 +1,7 @@
 import { makeStyles } from '@material-ui/core';
+import React from 'react';
 
+import DrawerMenu from '../DrawerMenu/DrawerMenu';
 import Navbar from './Navbar/Navbar';
 
 const useStyles = makeStyles({
@@ -26,13 +28,20 @@ const useStyles = makeStyles({
   },
 });
 
-const SiteLayout = ({ children }) => {
+const AdminLayout = ({ children }) => {
   const classes = useStyles();
+
+  const [openMenu, setOpenMenu] = React.useState(false);
+
+  const onToggleMenu = () => {
+    setOpenMenu(!openMenu);
+  };
 
   return (
     <main className={classes.main}>
       <header>
-        <Navbar showMenu={false} openDrawerHandler={() => {}}></Navbar>
+        <Navbar showMenu={true} openDrawerHandler={onToggleMenu}></Navbar>
+        <DrawerMenu open={openMenu} toggleDrawerHandler={onToggleMenu} />
       </header>
       <section className={classes.body}>{children}</section>
 
@@ -43,4 +52,4 @@ const SiteLayout = ({ children }) => {
   );
 };
 
-export default SiteLayout;
+export default AdminLayout;

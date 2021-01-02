@@ -1,16 +1,14 @@
-import React from "react";
+import React from 'react';
 
-import AdminDashboard from "../../../components/Layouts/AdminDashboard";
-import BikeForm from "../../../components/Bike/BikeForm";
+import BikeForm from '../../../components/Bike/BikeForm';
 
-const AddUser = () => {
-   
-    return (
-        <AdminDashboard>
-            <h1>Create Bike</h1>
-            <BikeForm mode="create"/>      
-        </AdminDashboard>
-    )
-}
+const AddBike = () => {
+  return (
+    <>
+      <h1>Create Bike</h1>
+      <BikeForm mode="create" />
+    </>
+  );
+};
 
-export default AddUser;
+export default AddBike;

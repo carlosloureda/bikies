@@ -6,6 +6,7 @@ import Image from 'material-ui-image';
 import Rating from '@material-ui/lab/Rating';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import { makeStyles } from '@material-ui/core/styles';
+import { useRouter } from 'next/router';
 
 import DatetimeSearch from '../../components/DatetimeSearch/DatetimeSearch';
 
@@ -58,6 +59,7 @@ const Bike = () => {
   const [error, setError] = React.useState(null);
 
   const classes = useStyles();
+  const router = useRouter();
 
   const onBookingHandler = () => {
     setError(null);
@@ -74,6 +76,7 @@ const Bike = () => {
     console.log(`--> ${pickupDate} - ${dropoffDate}`);
     // TODO: finish booking on backend
     // TODO: redirect to profile page
+    router.push('/dashboard/me');
   };
 
   return (

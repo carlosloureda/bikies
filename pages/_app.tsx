@@ -1,9 +1,15 @@
-import React from "react";
+import React from 'react';
 import type { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
+
 import '../styles/globals.css';
-import SiteLayout from "../components/Layouts/SiteLayout";
+import SiteLayout from '../components/Layouts/SiteLayout';
+import AdminLayout from '../components/Layouts/AdminLayout';
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+
+  console.log('pathname: ', router.pathname);
 
   React.useEffect(() => {
     // Remove the server-side injected CSS.
@@ -13,14 +19,21 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   }, []);
 
+  const { pathname } = router;
 
+  if (pathname.startsWith('/dashboard/')) {
+    return (
+      <AdminLayout>
+        <Component {...pageProps}></Component>
+      </AdminLayout>
+    );
+  }
 
   return (
     <SiteLayout>
       <Component {...pageProps}></Component>
     </SiteLayout>
-  )
-
+  );
 }
 
 export default MyApp;
