@@ -34,7 +34,12 @@ const AddUser = () => {
 
     const { register, handleSubmit, watch, errors, control } = useForm<Inputs>();
     const onSubmit = data => {
-        console.log(data)
+        if (!errors || !Object.values(errors).length) {
+            console.log("Submit form wth data", data);
+            // TODO: on user create redirect to id
+            const id = 3; 
+            router.push(`/dashboard/users/${id}`);
+        }
     };
   
     console.log(watch("example")) // watch input value by passing the name of it
@@ -54,14 +59,14 @@ const AddUser = () => {
                         name="name" 
                         label="First Name" 
                         inputRef={register( { required: true } )}
-                        error={errors.name && errors.name}
+                        error={errors && errors.name}
                         helperText={errors && errors.name && errors.name.message}
                     />
                     <TextField 
                         name="lastName"
                         label="Last Name" 
                         inputRef={register({ required: true })}
-                        error={errors.lastName && errors.lastName}
+                        error={errors && errors.lastName}
                         helperText={errors && errors.lastName && errors.lastName.message}
                     />
                 </Box>
@@ -70,8 +75,19 @@ const AddUser = () => {
                     <TextField 
                         name="email" 
                         label="Email" /*variant="outlined"*/ 
-                        inputRef={register( { required: true } )}
-                        error={errors.email && errors.email}
+                        type="email"
+                        inputRef={
+                            register( 
+                                { 
+                                    required: true, 
+                                    pattern: {
+                                        value: /S+@S+.S+/,
+                                        message: "Entered value does not match email format"
+                                    } 
+                                } 
+                            )
+                        }
+                        error={errors && errors.email}
                         helperText={errors && errors.email && errors.email.message}
                     />
                 </Box>
@@ -79,8 +95,8 @@ const AddUser = () => {
                     <TextField
                         select
                         required
-                        error={errors.role && errors.role}
-                        helperText={errors && errors.role && errors.role.message}
+                        // error={errors.role && errors.role}
+                        // helperText={errors && errors.role && errors.role.message}
                         defaultValue={role}
                         id="role"
                         inputProps={{
