@@ -25,6 +25,8 @@ const UserForm = ( { mode } ) => {
     const router = useRouter();
 
     const onSubmitHandler = data => {
+        console.log("data: ", data);
+        
         if (!errors || !Object.values(errors).length) {
             console.log("Submit form wth data", data);
             // TODO: on user create redirect to id
@@ -37,7 +39,7 @@ const UserForm = ( { mode } ) => {
     };
 
     return (
-        <form  onSubmit={onSubmitHandler}>
+        <form onSubmit={handleSubmit(data => onSubmitHandler(data))}>
             <Box>
                 <TextField 
                     name="name" 
