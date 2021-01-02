@@ -47,6 +47,7 @@ const UserForm = ( { mode } ) => {
                     inputRef={register( { required: true } )}
                     error={errors.name}
                     helperText={errors && errors.name && errors.name.message}
+                    disabled={ mode === 'view'}
                 />
                 <TextField 
                     name="lastName"
@@ -54,6 +55,7 @@ const UserForm = ( { mode } ) => {
                     inputRef={register({ required: true })}
                     error={errors && errors.lastName}
                     helperText={errors && errors.lastName && errors.lastName.message}
+                    disabled={ mode === 'view'}
                 />
             </Box>
                 
@@ -75,6 +77,7 @@ const UserForm = ( { mode } ) => {
                     }
                     error={errors && errors.email}
                     helperText={errors && errors.email && errors.email.message}
+                    disabled={ mode === 'view'}
                 />
             </Box>
             <FormControl /*variant="filled"*/ /*className={classes.formControl} */ >
@@ -94,9 +97,10 @@ const UserForm = ( { mode } ) => {
                             });
                         },
                     }}
-                    >
+                    disabled={ mode === 'view'}
+                >
                     <MenuItem value='user'>User</MenuItem>
-                        <MenuItem value='manager'>Manager</MenuItem>
+                    <MenuItem value='manager'>Manager</MenuItem>
                 </TextField>
             </FormControl>
            {mode !== 'view' && <FormControl>

@@ -58,6 +58,7 @@ const BikeForm = ( { mode } : { mode : string } ) => {
                     inputRef={register( { required: true } )}
                     error={errors.model}
                     helperText={errors && errors.model && errors.model.message}
+                    disabled={ mode === 'view'}
                 />
                 <TextField 
                     name="color"
@@ -65,6 +66,7 @@ const BikeForm = ( { mode } : { mode : string } ) => {
                     inputRef={register({ required: true })}
                     error={errors && errors.color}
                     helperText={errors && errors.color && errors.color.message}
+                    disabled={ mode === 'view'}
                 />
                 <TextField 
                     name="location"
@@ -72,6 +74,7 @@ const BikeForm = ( { mode } : { mode : string } ) => {
                     inputRef={register({ required: true })}
                     error={errors && errors.location}
                     helperText={errors && errors.location && errors.location.message}
+                    disabled={ mode === 'view'}
                 />
             </Box>
             { mode === 'edit' && (
@@ -93,23 +96,25 @@ const BikeForm = ( { mode } : { mode : string } ) => {
                     </Button>
                 </FormControl>
             )}
-             <Input
-                // accept="image/*"
-                // className={classes.input}
-                // style={{ display: 'none' }}
-                id="raised-button-file"
-                type="file"
-                onChange={(e) => {
-                    const { files } = e.target;
+            { mode !== 'view' && (
+                <Input
+                    // accept="image/*"
+                    // className={classes.input}
+                    // style={{ display: 'none' }}
+                    id="raised-button-file"
+                    type="file"
+                    onChange={(e) => {
+                        const { files } = e.target;
 
-                    if (files && files[0]) {
-                        setImagePath( URL.createObjectURL(files[0]));    
-                    }
-                    else {
-                        setImagePath(null);    
-                    }
-                }}
-            />
+                        if (files && files[0]) {
+                            setImagePath( URL.createObjectURL(files[0]));    
+                        }
+                        else {
+                            setImagePath(null);    
+                        }
+                    }}
+                />
+            )}
             {imagePath && (
                 // <Image src="/static/images/bike1.jpg" style={{maxWidth: "1000px"}}/>
                 <Image src={imagePath} style={{maxWidth: "1000px"}}/>
