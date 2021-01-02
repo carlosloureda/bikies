@@ -17,16 +17,16 @@ const styles = theme => ({
     marginRight: theme.spacing(2)
   },
   title: {
-    display: "none",
-    [theme.breakpoints.up("sm")]: {
+    // display: "none",
+    // [theme.breakpoints.up("sm")]: {
       display: "block"
-    }
+    // }
   },
   sectionDesktop: {
-    display: "none",
-    [theme.breakpoints.up("md")]: {
+    // display: "none",
+    // [theme.breakpoints.up("md")]: {
       display: "flex"
-    }
+    // }
   },
 //   sectionMobile: {
 //     display: "flex",

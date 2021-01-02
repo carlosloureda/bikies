@@ -1,6 +1,7 @@
 import React from "react";
 import type { AppProps } from 'next/app';
 import '../styles/globals.css';
+import SiteLayout from "../components/Layouts/SiteLayout";
 
 function MyApp({ Component, pageProps }: AppProps) {
 
@@ -11,7 +12,14 @@ function MyApp({ Component, pageProps }: AppProps) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
   }, []);
-  return <Component {...pageProps} />;
+
+
+
+  return (
+    <SiteLayout>
+      <Component {...pageProps}></Component>
+    </SiteLayout>
+  )
 
 }
 

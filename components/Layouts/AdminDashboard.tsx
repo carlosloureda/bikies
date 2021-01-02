@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "./../../components/Navbar/Navbar"
+import Navbar from "./Navbar/Navbar"
 import DrawerMenu from "./../../components/DrawerMenu/DrawerMenu"
 
 const AdminDashboard = ({children}) => {

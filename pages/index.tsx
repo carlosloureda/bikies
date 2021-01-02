@@ -9,6 +9,8 @@ import React from "react";
 import { Autocomplete } from '@material-ui/lab';
 import { TextField } from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
+import SiteLayout from '../components/Layouts/SiteLayout';
+
 
 const SearchBox = () => <div>Search Box</div>;
 
@@ -73,7 +75,8 @@ const cities = [
   "Segovia",
   "Soria",
   "Teruel",
-];
+];  
+
 
 const models = [
   "Specialized",
@@ -119,12 +122,6 @@ const Example = () => {
 
   return (
     <>    
-      {/* <SearchBox /> */}
-      {/* TODO: location */}
-      {/* TODO: color */}
-      {/* TODO: model */}
-      {/* TODO: rating */}
-
       <Grid container justify="space-between" style={{width: "50%", margin: "0 auto"}}>
         <DatetimeSearch 
             pickupDate={pickupDate}
@@ -201,7 +198,7 @@ const Example = () => {
         </Box>
 
 
-      <List />;
+      <List />
     </>
   );
 };

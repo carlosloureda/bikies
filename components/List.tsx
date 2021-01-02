@@ -11,7 +11,6 @@ export default function List() {
       {cards.map((c) => (
         <BikeCard key={c} bike={c} />
       ))}
-      <h2>holas</h2>
     </Box>
   );
 }
