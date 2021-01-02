@@ -18,10 +18,10 @@ type Inputs = {
     role: string,
 };
 
-const UserForm = ( { mode } ) => {
+const UserForm = ( { mode, user=null } ) => {
 
+    console.log("---> user: ", user)
     const { register, handleSubmit, watch, errors, control } = useForm<Inputs>();
-    const [role, useRole] = React.useState("manager");
     const router = useRouter();
 
     const onSubmitHandler = data => {
@@ -48,6 +48,7 @@ const UserForm = ( { mode } ) => {
                     error={errors.name}
                     helperText={errors && errors.name && errors.name.message}
                     disabled={ mode === 'view'}
+                    value={ user && user.name }
                 />
                 <TextField 
                     name="lastName"
@@ -56,6 +57,7 @@ const UserForm = ( { mode } ) => {
                     error={errors && errors.lastName}
                     helperText={errors && errors.lastName && errors.lastName.message}
                     disabled={ mode === 'view'}
+                    value={ user && user.lastName }
                 />
             </Box>
                 
@@ -78,6 +80,7 @@ const UserForm = ( { mode } ) => {
                     error={errors && errors.email}
                     helperText={errors && errors.email && errors.email.message}
                     disabled={ mode === 'view'}
+                    value={ user && user.email }
                 />
             </Box>
             <FormControl /*variant="filled"*/ /*className={classes.formControl} */ >
@@ -86,7 +89,7 @@ const UserForm = ( { mode } ) => {
                     required
                     // error={errors.role && errors.role}
                     // helperText={errors && errors.role && errors.role.message}
-                    defaultValue={role}
+                    value={ user && user.role }
                     id="role"
                     inputProps={{
                         inputRef: (ref) => {

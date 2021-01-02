@@ -5,6 +5,7 @@ import {
     Button,
 } from '@material-ui/core';
 import ConfirmDialog from '../../../components/Dialogs/ConfirmDialog';
+import UserBookings from '../../../components/Bookings/UserBookings';
 
 const users = [
     { id: 1, email: "email1@mail.com", lastName: 'Snow', name: 'Jon', role: "manager" },
@@ -56,8 +57,9 @@ const UserDetail = () => {
                     Cancel
                 </Button>    
             )}
-            <UserForm mode={mode} />
+            <UserForm mode={mode} user={currentUser}/>
             {/* TODO: show user bookings */}
+            <UserBookings />
 
             <ConfirmDialog
                 title="Delete User?"
