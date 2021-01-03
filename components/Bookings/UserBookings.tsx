@@ -6,10 +6,13 @@ import {
 } from '@material-ui/data-grid';
 
 import IconButton from '@material-ui/core/IconButton';
+import GradeIcon from '@material-ui/icons/Grade';
 import BlockIcon from '@material-ui/icons/Block';
-import { Box, Chip, Grid, Link } from '@material-ui/core';
+import { Chip, Link, Modal } from '@material-ui/core';
 import Api from '../../utils/api';
 import ConfirmDialog from '../Dialogs/ConfirmDialog';
+import FormDialog from '../Dialogs/FormDialog';
+import { Rating } from '@material-ui/lab';
 
 const PAGE_SIZE = 5;
 
@@ -21,7 +24,6 @@ const diffDays = (date2: Date, date1: Date) => {
 const getColumnsAdmin = (actionButtons) => [
   {
     field: 'model',
-    // label: `${bike.model}`,
     headerName: 'Bike',
     width: 200,
     renderCell: (params: CellParams) => {
@@ -168,15 +170,13 @@ const getColumnsUser = (actionButtons) => [
   },
 ];
 
-// bike Id
-// startDate y endDate
-// rating for that booking
-
 const UserBookings = ({ user }) => {
   const [bookings, setBookings] = React.useState([]);
   const [booking, setBooking] = React.useState(null);
   const [count, setCount] = React.useState(0);
   const [open, setOpen] = React.useState(false);
+  const [bookingRating, setBookingRating] = React.useState(5);
+  const [openRateModal, setOpenRateModal] = React.useState(false);
 
   async function getBookings({ page = 1, pageSize = 5 }) {
     const result = await Api.get(
@@ -203,24 +203,39 @@ const UserBookings = ({ user }) => {
 
   const actionButtons = (params) => {
     const onCancelHandler = () => {
-      console.log('cancelling');
       setOpen(true);
       setBooking(params.row);
     };
 
-    if (params.row.state === 'active') {
-      return (
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="cancel booking"
-          onClick={onCancelHandler}
-        >
-          <BlockIcon color="secondary" />
-        </IconButton>
-      );
-    }
-    return null;
+    return (
+      <>
+        {params.row.state === 'active' && (
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="cancel booking"
+            onClick={onCancelHandler}
+          >
+            <BlockIcon color="secondary" />
+          </IconButton>
+        )}
+        {!params.row.rating && params.row.state === 'active' && (
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="cancel booking"
+            onClick={() => {
+              setOpenRateModal(true);
+              setBooking(params.row);
+            }}
+          >
+            <GradeIcon color="primary" />
+          </IconButton>
+        )}
+      </>
+    );
+    // }
+    // return null;
   };
 
   const getColumnsFn = user.role === 'user' ? getColumnsUser : getColumnsAdmin;
@@ -228,6 +243,16 @@ const UserBookings = ({ user }) => {
   const onCancel = async () => {
     booking.state = 'cancelled';
     const result = await Api.update(`api/bookings/${booking._id}`, booking);
+    if (result.success) {
+      getBookings({ page: 1, pageSize: PAGE_SIZE });
+    }
+  };
+
+  const onUpdate = async () => {
+    booking.rating = bookingRating;
+    console.log('booking: ', booking);
+    const result = await Api.update(`api/bookings/${booking._id}`, booking);
+    console.log('result: ', result);
     if (result.success) {
       getBookings({ page: 1, pageSize: PAGE_SIZE });
     }
@@ -243,6 +268,7 @@ const UserBookings = ({ user }) => {
       >
         Are you sure you want to cancel this booking?
       </ConfirmDialog>
+
       <DataGrid
         rows={bookings}
         columns={getColumnsFn(actionButtons)}
@@ -251,6 +277,28 @@ const UserBookings = ({ user }) => {
         rowCount={count}
         onPageChange={handlePageChange}
       />
+
+      <FormDialog
+        title="Rate Booking"
+        open={openRateModal}
+        setOpen={setOpenRateModal}
+        onConfirm={() => {
+          console.log('Saving rate: ', bookingRating);
+          onUpdate();
+        }}
+        onCloseHandler={() => {
+          setBookingRating(5);
+        }}
+      >
+        <Rating
+          name="simple-controlled"
+          value={bookingRating}
+          precision={1}
+          onChange={(event, value) => {
+            setBookingRating(value);
+          }}
+        />
+      </FormDialog>
     </div>
   );
 };

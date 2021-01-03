@@ -4,9 +4,11 @@ export interface IBike {
   model: string;
   color: string;
   location: string;
-  rating?: Number;
   image: string;
   available: boolean;
+  rating?: Number;
+  ratingTotal?: Number;
+  rateCount?: Number;
 }
 
 const BikeSchema: Schema = new Schema({
@@ -24,10 +26,6 @@ const BikeSchema: Schema = new Schema({
     type: String,
     required: true,
   },
-  rating: {
-    type: Number,
-    default: 5,
-  },
   image: {
     type: String,
     required: true,
@@ -35,6 +33,18 @@ const BikeSchema: Schema = new Schema({
   available: {
     type: Boolean,
     default: true,
+  },
+  rating: {
+    type: Number,
+    default: 0,
+  },
+  ratingTotal: {
+    type: Number,
+    default: 0,
+  },
+  rateCount: {
+    type: Number,
+    default: 0,
   },
 });
 
