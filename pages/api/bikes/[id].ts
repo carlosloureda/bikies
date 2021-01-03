@@ -30,24 +30,23 @@ export default async function handler(
 
     case 'PUT':
       try {
-        let user = await Bike.findOne({ _id: id });
+        let bike = await Bike.findOne({ _id: id });
 
-        // if (user) {
-        const { firstName, lastName, email, role } = JSON.parse(req.body);
+        const { model, color, location, rating, image } = JSON.parse(req.body);
 
-        user.firstName = firstName;
-        user.lastName = lastName;
-        user.email = email;
-        user.role = role;
-        await user.save();
-        // }
+        bike.model = model;
+        bike.color = color;
+        bike.location = location;
+        bike.rating = rating;
+        bike.image = image;
+        await bike.save();
 
-        if (!user) {
+        if (!bike) {
           return res
             .status(400)
-            .json({ success: false, error: 'User not found' });
+            .json({ success: false, error: 'Bike not found' });
         }
-        res.status(200).json({ success: true, data: user });
+        res.status(200).json({ success: true, data: bike });
       } catch (error) {
         res.status(400).json({ success: false, error: error.message });
       }

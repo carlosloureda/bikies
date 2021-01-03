@@ -18,6 +18,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Api from '../../utils/api';
 
 type Inputs = {
+  _id: string;
   model: string;
   color: string;
   location: string;
@@ -41,20 +42,17 @@ const BikeForm = ({ mode, bike }: { mode: string; bike?: Inputs }) => {
     },
   });
   const [rating, setRating] = React.useState(3.6);
+  const [sending, setSending] = React.useState(false);
   const router = useRouter();
 
   const [imagePath, setImagePath] = React.useState(null);
 
   const onSubmitHandler = async (data) => {
     setError('');
-
-    console.log('--> data: ', data.image[0]);
-    console.log('--> errors: ', errors);
+    setSending(true);
 
     if (!errors || !Object.values(errors).length) {
       let result = null;
-
-      console.log('>>> data image: ', data.image[0]);
 
       // const dataForSignature = {
       //   timestamp: new Date().getTime(),
@@ -95,7 +93,18 @@ const BikeForm = ({ mode, bike }: { mode: string; bike?: Inputs }) => {
       //   }
       // );
       data.image = 'imagePath';
-      result = await Api.post('api/bikes', JSON.stringify(data));
+
+      if (mode === 'create') {
+        console.log('--> bike: ', bike);
+        result = await Api.post(`api/bikes`, JSON.stringify(data));
+      } else if (mode === 'edit') {
+        console.log('-1122-> bike: ', bike);
+        result = await Api.update(
+          `api/bikes/${bike._id}`,
+          JSON.stringify(data)
+        );
+        console.log('-1122-> bike: ', result);
+      }
 
       if (!result.success) {
         setError(result.error);
@@ -106,6 +115,7 @@ const BikeForm = ({ mode, bike }: { mode: string; bike?: Inputs }) => {
         }
       }
     }
+    setSending(false);
   };
 
   const onFileLoad = (e, file) => console.log(e.target.result, file.name);
@@ -194,7 +204,12 @@ const BikeForm = ({ mode, bike }: { mode: string; bike?: Inputs }) => {
           {mode !== 'view' && (
             <Box className={classes.formRow}>
               <FormControl>
-                <Button variant="contained" color="primary" type="submit">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={sending}
+                >
                   Submit
                 </Button>
               </FormControl>
@@ -203,10 +218,7 @@ const BikeForm = ({ mode, bike }: { mode: string; bike?: Inputs }) => {
         </form>
       </Grid>
       <Grid item xs={9} container justify="center">
-        {imagePath && (
-          // <Image src="/static/images/bike1.jpg" style={{maxWidth: "1000px"}}/>
-          <Image src={imagePath} />
-        )}
+        {imagePath && <Image src={imagePath} />}
       </Grid>
     </Grid>
   );

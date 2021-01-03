@@ -40,7 +40,6 @@ const UserForm = ({ mode, user }: { mode: string; user?: Inputs }) => {
     setError('');
     if (!errors || !Object.values(errors).length) {
       let result = null;
-      console.log('no errors');
 
       if (mode === 'create') {
         result = await Api.post('api/users', JSON.stringify(data));
