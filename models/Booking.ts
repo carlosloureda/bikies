@@ -5,7 +5,7 @@ export interface IBooking {
   user: object;
   startDate: string;
   endDate: string;
-  rating: string;
+  rating: number;
   state: State;
 }
 
@@ -35,7 +35,7 @@ const BookingSchema: Schema = new Schema({
     required: true,
   },
   rating: {
-    type: String,
+    type: Number,
   },
   state: {
     type: String,
