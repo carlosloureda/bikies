@@ -28,13 +28,20 @@ export default async function handler(
       }
       break;
 
-    case 'PUT' /* Edit a model by its ID */:
+    case 'PUT':
       try {
-        // const user = await User.findByIdAndUpdate(email, req.body, {
-        const user = await User.findOneAndUpdate({ _id: id }, req.body, {
-          new: true,
-          runValidators: true,
-        });
+        let user = await User.findOne({ _id: id });
+
+        // if (user) {
+        const { firstName, lastName, email, role } = JSON.parse(req.body);
+
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.email = email;
+        user.role = role;
+        await user.save();
+        // }
+
         if (!user) {
           return res
             .status(400)

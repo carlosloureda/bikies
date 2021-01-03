@@ -6,8 +6,10 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { TextField, Button, Grid, Box, MenuItem } from '@material-ui/core';
 import ReactHookFormSelect from '../atoms/ReactHookFormSelect';
+import Api from '../../utils/api';
 
 type Inputs = {
+  _id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -35,22 +37,19 @@ const UserForm = ({ mode, user }: { mode: string; user?: Inputs }) => {
   const [error, setError] = React.useState('');
 
   const onSubmitHandler = async (data) => {
-    console.log('data: ', data);
     setError('');
     if (!errors || !Object.values(errors).length) {
-      const server = process.env.NEXT_PUBLIC_SERVER_URL;
-      const response = await fetch(`${server}/api/users`, {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify(data),
-      });
-      const result = await response.json();
+      let result = null;
+      console.log('no errors');
+
+      if (mode === 'create') {
+        result = await Api.post('api/users', JSON.stringify(data));
+      } else if (mode === 'edit') {
+        result = await Api.update(
+          `api/users/${user._id}`,
+          JSON.stringify(data)
+        );
+      }
       if (!result.success) {
         setError(result.error);
       } else {

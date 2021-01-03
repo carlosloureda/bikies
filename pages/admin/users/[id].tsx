@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 import UserForm from '../../../components/User/UserForm';
-import { Button } from '@material-ui/core';
+import { Button, Grid, Typography } from '@material-ui/core';
 import ConfirmDialog from '../../../components/Dialogs/ConfirmDialog';
 import UserBookings from '../../../components/Bookings/UserBookings';
 import { Alert, AlertTitle } from '@material-ui/lab';
@@ -45,56 +45,73 @@ const UserDetail = () => {
   };
 
   return (
-    <>
+    <Grid container justify="center">
       {error && (
         <Alert severity="error">
           <AlertTitle>Error</AlertTitle>
           {error}
         </Alert>
       )}
-      <h1>User Detail</h1>
+      <Grid item xs={12}>
+        <Typography variant="h2" component="h2" align="center">
+          User Detail
+        </Typography>
+        {mode === 'view' && (
+          <Grid
+            item
+            container
+            xs={12}
+            justify="center"
+            style={{ paddingTop: '1rem', paddingBottom: '1rem' }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setMode('edit')}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => setOpenDeleteModal(true)}
+              disabled={deleting}
+            >
+              Delete
+            </Button>
+          </Grid>
+        )}
+        {mode === 'edit' && (
+          <Grid
+            item
+            container
+            xs={12}
+            justify="center"
+            style={{ paddingTop: '1rem', paddingBottom: '1rem' }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setMode('view')}
+            >
+              Cancel
+            </Button>
+          </Grid>
+        )}
+        {currentUser && <UserForm mode={mode} user={currentUser} />}
+        {/* TODO: show user bookings */}
+        {/* <UserBookings /> */}
 
-      {mode === 'view' && (
-        <>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setMode('edit')}
-          >
-            Edit
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => setOpenDeleteModal(true)}
-            disabled={deleting}
-          >
-            Delete
-          </Button>
-        </>
-      )}
-      {mode === 'edit' && (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setMode('view')}
+        <ConfirmDialog
+          title="Delete User?"
+          open={openDeleteModal}
+          setOpen={setOpenDeleteModal}
+          onConfirm={onDelete}
         >
-          Cancel
-        </Button>
-      )}
-      {currentUser && <UserForm mode={mode} user={currentUser} />}
-      {/* TODO: show user bookings */}
-      {/* <UserBookings /> */}
-
-      <ConfirmDialog
-        title="Delete User?"
-        open={openDeleteModal}
-        setOpen={setOpenDeleteModal}
-        onConfirm={onDelete}
-      >
-        Are you sure you want to delete this user?
-      </ConfirmDialog>
-    </>
+          Are you sure you want to delete this user?
+        </ConfirmDialog>
+      </Grid>
+    </Grid>
   );
 };
 
