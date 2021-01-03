@@ -72,7 +72,6 @@ export default async function handler(
         }
         if (query.available) searchQuery.available = query.available;
 
-        console.log('searchQuery: ', searchQuery);
         const bikes = await Bike.find(searchQuery).skip(skip).limit(limit);
         const count = await Bike.count(searchQuery);
 

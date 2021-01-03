@@ -40,6 +40,8 @@ const Navbar = ({ classes, showMenu = true, openDrawerHandler, ...props }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const router = useRouter();
 
+  const [session, loading] = useSession();
+
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -59,6 +61,11 @@ const Navbar = ({ classes, showMenu = true, openDrawerHandler, ...props }) => {
     router.push('/');
   };
 
+  const goToDashboard = () => {
+    setAnchorEl(null);
+    router.push('/admin/users');
+  };
+
   const isMenuOpen = Boolean(anchorEl);
 
   const menuId = 'primary-search-account-menu';
@@ -73,14 +80,13 @@ const Navbar = ({ classes, showMenu = true, openDrawerHandler, ...props }) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
+      {session && session.user.role === 'manager' && (
+        <MenuItem onClick={goToDashboard}>Dashboard</MenuItem>
+      )}
       <MenuItem onClick={goToProfile}>My account</MenuItem>
       <MenuItem onClick={goToLogout}>Log out</MenuItem>
     </Menu>
   );
-
-  const [session, loading] = useSession();
-
-  console.log('--> session: ', session);
 
   return (
     <div className={classes.grow}>
@@ -131,7 +137,6 @@ const Navbar = ({ classes, showMenu = true, openDrawerHandler, ...props }) => {
         </Toolbar>
       </AppBar>
       {session && renderUserMenu}
-      {/* {!ession && } */}
     </div>
   );
 };

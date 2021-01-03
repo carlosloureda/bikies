@@ -1,3 +1,4 @@
+import { getSession } from 'next-auth/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import dbConnect from '../../../utils/dbConnect';
@@ -6,14 +7,9 @@ import User from '../../../models/User';
 import Bike from '../../../models/Bike';
 
 type SearchQuery = {
-  //   location?: string;
-  //   model?: string;
-  //   color?: string;
-  //   rating?: string;
   page?: string;
   pageSize?: string;
-  //   pickupDate?: string; //TODO: date
-  //   dropoffDate?: string; //TODO: date
+  user?: string;
 };
 
 export default async function handler(
@@ -60,7 +56,7 @@ export default async function handler(
         const skip = page * limit;
 
         let searchQuery: SearchQuery = {};
-        // if (query.location) searchQuery.location = query.location;
+        if (query.user) searchQuery.user = query.user;
         // if (query.model) searchQuery.model = query.model;
         // if (query.color) searchQuery.color = query.color;
         // if (query.rating) searchQuery.rating = query.rating;

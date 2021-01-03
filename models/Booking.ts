@@ -16,10 +16,6 @@ enum State {
 }
 
 const BookingSchema: Schema = new Schema({
-  // _id: {
-  //   bikeId: String,
-  //   userId: String,
-  // },
   bike: {
     type: Schema.Types.ObjectId,
     ref: 'Bike',
@@ -47,18 +43,5 @@ const BookingSchema: Schema = new Schema({
     default: 'active',
   },
 });
-
-// interface BikeBaseDocument extends Bike, Document {}
-
-// export interface BikeDocument extends BikeBaseDocument {}
-// export interface BikeModel extends Model<BikeDocument> {}
-
-// export default models.Bike ||
-//   model<BikeDocument, BikeModel>('Bike', BookingSchema);
-
-// const Bike: Model<IBooking> = model('Bike', BookingSchema);
-// export default models.Bike || model<IBooking>('Bike', BookingSchema);
-
-// const Bike = model('Bike', BookingSchema);
 
 export default models.Booking || model('Booking', BookingSchema);

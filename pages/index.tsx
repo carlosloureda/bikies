@@ -65,7 +65,6 @@ const Booking = () => {
   const getBikes = async (url = 'api/bikes?available=true') => {
     // TODO: show bikes free those days
     const result = await Api.get(url);
-    console.log('result: ', result);
     if (!result.success) {
       setError(result.error);
       return;
@@ -80,7 +79,6 @@ const Booking = () => {
 
   const onSearch = () => {
     let url = `api/bikes?available=true&pickupDate=${pickupDate}&dropoffDate=${dropoffDate}`;
-    console.log('selectedFilters: ', selectedFilters);
     if (selectedFilters.location) {
       url += `&location=${selectedFilters.location}`;
     }

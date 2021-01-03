@@ -23,7 +23,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const { pathname } = router;
 
-  console.log('>>> pageProps.user: ', pageProps.user);
   if (pathname.startsWith('/admin/')) {
     return (
       <Provider session={pageProps.session}>
@@ -45,7 +44,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx);
-  console.log('session: ', session);
   if (!session) {
     ctx.res.writeHead(302, { Location: '/' });
     ctx.res.end();

@@ -67,6 +67,8 @@ const Bike = () => {
     _id: '5fea7f5fba8bc276ffbab89e',
   });
 
+  const [querying, setQuerying] = React.useState(false);
+
   const classes = useStyles();
 
   const getBike = async () => {
@@ -87,6 +89,7 @@ const Bike = () => {
 
   const onBookingHandler = async () => {
     setError(null);
+    setQuerying(true);
 
     if (!session) {
       return setError('You need to log in to book');
@@ -111,11 +114,12 @@ const Bike = () => {
 
     const result = await Api.post('api/bookings', booking);
     if (result.success) {
-      // router.push('/dashboard/me');
+      router.push('/dashboard/me');
     } else {
       setError('Error booking');
       console.error('Error booking: ', result.error);
     }
+    setQuerying(false);
   };
 
   return (
@@ -182,6 +186,7 @@ const Bike = () => {
                 variant="contained"
                 color="primary"
                 onClick={onBookingHandler}
+                disabled={querying}
               >
                 Book
               </Button>

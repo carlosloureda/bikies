@@ -16,7 +16,6 @@ export default async function handler(
   const session = await getSession({ req });
 
   const checkAccess = () => {
-    console.log('Check access');
     if (!session) {
       // Signed in
       res.status(401).json('401 - Unauthorized. Please log in');

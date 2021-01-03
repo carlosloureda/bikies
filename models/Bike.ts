@@ -36,22 +36,6 @@ const BikeSchema: Schema = new Schema({
     type: Boolean,
     default: true,
   },
-  // deleted: {
-  //   type: Boolean,
-  // },
 });
-
-// interface BikeBaseDocument extends Bike, Document {}
-
-// export interface BikeDocument extends BikeBaseDocument {}
-// export interface BikeModel extends Model<BikeDocument> {}
-
-// export default models.Bike ||
-//   model<BikeDocument, BikeModel>('Bike', BikeSchema);
-
-// const Bike: Model<IBike> = model('Bike', BikeSchema);
-// export default models.Bike || model<IBike>('Bike', BikeSchema);
-
-// const Bike = model('Bike', BikeSchema);
 
 export default models.Bike || model('Bike', BikeSchema);

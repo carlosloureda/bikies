@@ -173,7 +173,6 @@ const getColumnsUser = (actionButtons) => [
 // rating for that booking
 
 const UserBookings = ({ user }) => {
-  console.log('user: ', user);
   const [bookings, setBookings] = React.useState([]);
   const [booking, setBooking] = React.useState(null);
   const [count, setCount] = React.useState(0);
@@ -191,7 +190,6 @@ const UserBookings = ({ user }) => {
       });
       setBookings(result.data.bookings);
       setCount(result.data.count);
-      console.log('bookings: ', bookings);
     }
   }
 
