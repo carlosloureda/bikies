@@ -9,6 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useRouter } from 'next/router';
 
 import DatetimeSearch from '../../components/DatetimeSearch/DatetimeSearch';
+import Api from '../../utils/api';
 
 const bikeModel = {
   id: 1,
@@ -50,6 +51,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Bike = () => {
+  const router = useRouter();
+  const { id } = router.query;
   const today = new Date();
   const tomorrowDate = addDateOneDay(today);
   const [pickupDate, setPickupDate] = React.useState(tomorrowDate);
@@ -57,12 +60,32 @@ const Bike = () => {
     addDateOneDay(tomorrowDate)
   );
   const [error, setError] = React.useState(null);
+  const [bike, setBike] = React.useState(null);
+  const [currentUser, setCurrentUser] = React.useState({
+    _id: '5fea7f5fba8bc276ffbab89e',
+  });
 
   const classes = useStyles();
-  const router = useRouter();
 
-  const onBookingHandler = () => {
+  const getBike = async () => {
+    const result = await Api.get(`api/bikes/${id}`);
+    if (result.success) {
+      setBike(result.data);
+    } else {
+      setError('Error fetching bike');
+      console.error('Error fetching bike: ', result.error);
+    }
+  };
+
+  React.useEffect(() => {
+    if (id) {
+      getBike();
+    }
+  }, [id]);
+
+  const onBookingHandler = async () => {
     setError(null);
+    // TODO: loading
     if (!pickupDate) {
       return setError('Select date and time for pickup');
     } else if (!dropoffDate) {
@@ -73,10 +96,21 @@ const Bike = () => {
       return setError('drop off date should be later than pickup ');
     }
 
-    console.log(`--> ${pickupDate} - ${dropoffDate}`);
-    // TODO: finish booking on backend
-    // TODO: redirect to profile page
-    router.push('/dashboard/me');
+    const booking = {
+      bike: id,
+      user: currentUser._id,
+      startDate: pickupDate,
+      endDate: dropoffDate,
+    };
+    console.log('--> booking: ', booking);
+
+    const result = await Api.post('api/bookings', booking);
+    if (result.success) {
+      // router.push('/dashboard/me');
+    } else {
+      setError('Error booking');
+      console.error('Error booking: ', result.error);
+    }
   };
 
   return (
@@ -105,50 +139,58 @@ const Bike = () => {
           />
         </Grid>
 
-        <Grid item container className={classes.bikeContainer} justify="center">
-          <Grid item xs={9} className={classes.info}>
-            <Typography variant="subtitle1" color="textSecondary">
-              Orbea TC-4W
-            </Typography>
-            <Typography variant="body1" color="textSecondary" gutterBottom>
-              Black
-            </Typography>
-            <Rating name="read-only" value={4} readOnly />
-            <Box display="flex" flexDirection="row">
-              <LocationOnIcon />
-              <Typography variant="body1" color="textSecondary" component="h3">
-                A Coruña.
-              </Typography>
-            </Box>
-          </Grid>
+        {bike && (
           <Grid
             item
-            xs={3}
             container
-            alignContent="center"
-            justify="flex-end"
-            className={classes.bookButton}
+            className={classes.bikeContainer}
+            justify="center"
           >
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={onBookingHandler}
+            <Grid item xs={9} className={classes.info}>
+              <Typography variant="subtitle1" color="textSecondary">
+                {bike.model}
+              </Typography>
+              <Typography variant="body1" color="textSecondary" gutterBottom>
+                {bike.color}
+              </Typography>
+              <Rating name="read-only" value={4} readOnly />
+              <Box display="flex" flexDirection="row">
+                <LocationOnIcon />
+                <Typography
+                  variant="body1"
+                  color="textSecondary"
+                  component="h3"
+                >
+                  {bike.location}
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid
+              item
+              xs={3}
+              container
+              alignContent="center"
+              justify="flex-end"
+              className={classes.bookButton}
             >
-              Book
-            </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={onBookingHandler}
+              >
+                Book
+              </Button>
+            </Grid>
+            <Grid item xs={6} className={classes.imageContainer}>
+              <Image src="/static/images/bike1.jpg" />
+            </Grid>
+            <Grid item xs={9} className={classes.description}>
+              <Typography variant="body2" color="textSecondary" component="p">
+                {bike.description}
+              </Typography>
+            </Grid>
           </Grid>
-          <Grid item xs={6} className={classes.imageContainer}>
-            <Image src="/static/images/bike1.jpg" />
-          </Grid>
-          <Grid item xs={9} className={classes.description}>
-            <Typography variant="body2" color="textSecondary" component="p">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-              Explicabo rem, ipsum sed magnam consectetur reiciendis doloremque
-              eum nesciunt necessitatibus voluptatem repudiandae doloribus
-              saepe, minus ut! Non officiis repellat asperiores vero?
-            </Typography>
-          </Grid>
-        </Grid>
+        )}
       </Grid>
     </Box>
   );

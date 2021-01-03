@@ -6,106 +6,15 @@ import Typography from '@material-ui/core/Typography';
 import DatetimeSearch from '../components/DatetimeSearch/DatetimeSearch';
 import React from 'react';
 import { Autocomplete } from '@material-ui/lab';
-import { FormControl, TextField } from '@material-ui/core';
+import { Button, FormControl, TextField } from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
 import { makeStyles } from '@material-ui/core';
+import Api from '../utils/api';
 
 // TODO: header - login/logout
 // TODO: footer
 
 const disabledDates = ['Wed Dec 30 2020', 'Mon Dec 14 2020'];
-
-const cities = [
-  'Madrid',
-  'Barcelona',
-  'Valencia',
-  'Sevilla',
-  'Zaragoza',
-  'Málaga',
-  'Murcia',
-  'Palma',
-  'Las Palmas de Gran Canaria',
-  'Bilbao',
-  'Alicante',
-  'Córdoba',
-  'Valladolid',
-  'Vitoria',
-  'La Coruña',
-  'Granada',
-  'Oviedo',
-  'Santa Cruz de Tenerife',
-  'Pamplona',
-  'Almería',
-  'San Sebastián',
-  'Burgos',
-  'Albacete',
-  'Santander',
-  'Castellón de la Plana',
-  'Logroño',
-  'Badajoz',
-  'Salamanca',
-  'Huelva',
-  'Lérida',
-  'Tarragona',
-  'León',
-  'Cádiz',
-  'Jaén',
-  'Orense',
-  'Gerona',
-  'Lugo',
-  'Cáceres',
-  'Melilla',
-  'Guadalajara',
-  'Toledo',
-  'Ceuta',
-  'Pontevedra',
-  'Palencia',
-  'Ciudad Real',
-  'Zamora',
-  'Ávila',
-  'Cuenca',
-  'Huesca',
-  'Segovia',
-  'Soria',
-  'Teruel',
-];
-
-const models = [
-  'Specialized',
-  'Trek',
-  'Merida',
-  'Scott',
-  'Giant',
-  'Cube',
-  'Lapierre',
-  'Orbea',
-  'Cannondale',
-  'BMC',
-  'Canyon',
-  'Look',
-  'Protek',
-  'Megamo',
-  'Pinarello',
-  'Bianchi',
-  'BH',
-  'Factor',
-  'Ghost',
-  'Cervélo',
-  'Argon',
-];
-
-const colors = [
-  'Turquoise',
-  'Orange',
-  'Yellow',
-  'Red',
-  'Green',
-  'White',
-  'Pink',
-  'Gray',
-  'Black',
-  'Blue',
-];
 
 const addDateOneDay = (date: Date) => {
   const dateCp = new Date(date);
@@ -134,6 +43,61 @@ const Booking = () => {
   const [error, setError] = React.useState(null);
   const classes = useStyles();
 
+  const [bikes, setBikes] = React.useState([]);
+  const [filters, setFilers] = React.useState({
+    locations: [],
+    colors: [],
+    models: [],
+  });
+  const [selectedFilters, setSelectedFilters] = React.useState({
+    location: '',
+    model: '',
+    color: '',
+    rating: '',
+  });
+
+  const getFilters = async () => {
+    const result = await Api.get('api/bikes/filters');
+    if (!result.success) {
+      setError(result.error);
+      return;
+    }
+    setFilers(result.data);
+  };
+
+  const getBikes = async (url = 'api/bikes') => {
+    // TODO: show bikes free those days
+    const result = await Api.get(url);
+    if (!result.success) {
+      setError(result.error);
+      return;
+    }
+    setBikes(result.data.bikes);
+  };
+
+  React.useEffect(() => {
+    getFilters();
+    getBikes();
+  }, [pickupDate, dropoffDate]);
+
+  const onSearch = () => {
+    console.log('on search, selectedFilters: ', selectedFilters);
+    let url = `api/bikes?pickupDate=${pickupDate}&dropoffDate=${dropoffDate}`;
+    if (selectedFilters.location) {
+      url += `&location=${selectedFilters.location}`;
+    }
+    if (selectedFilters.model) {
+      url += `&model=${selectedFilters.model}`;
+    }
+    if (selectedFilters.color) {
+      url += `&color=${selectedFilters.color}`;
+    }
+    if (selectedFilters.rating) {
+      url += `&rating=${selectedFilters.rating}`;
+    }
+    getBikes(url);
+  };
+
   return (
     <Box>
       <Box
@@ -157,7 +121,15 @@ const Booking = () => {
             <Autocomplete
               freeSolo
               disableClearable
-              options={cities.map((option) => option)}
+              options={
+                filters.locations && filters.locations.map((option) => option)
+              }
+              onChange={(event, value) => {
+                setSelectedFilters({
+                  ...selectedFilters,
+                  location: value,
+                });
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -172,8 +144,14 @@ const Booking = () => {
           <Grid item lg={3} sm={6} xs={12}>
             <Autocomplete
               freeSolo
+              onChange={(event, value) => {
+                setSelectedFilters({
+                  ...selectedFilters,
+                  model: value,
+                });
+              }}
               disableClearable
-              options={models.map((option) => option)}
+              options={filters.models && filters.models.map((option) => option)}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -189,7 +167,13 @@ const Booking = () => {
             <Autocomplete
               freeSolo
               disableClearable
-              options={colors.map((option) => option)}
+              onChange={(event, value) => {
+                setSelectedFilters({
+                  ...selectedFilters,
+                  color: value,
+                });
+              }}
+              options={filters.colors && filters.colors.map((option) => option)}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -213,8 +197,11 @@ const Booking = () => {
                 name="simple-controlled"
                 value={2}
                 precision={0.1}
-                onChange={(event, newValue) => {
-                  // setRating(newValue);
+                onChange={(event, value) => {
+                  setSelectedFilters({
+                    ...selectedFilters,
+                    rating: value,
+                  });
                 }}
               />
             </Box>
@@ -225,8 +212,17 @@ const Booking = () => {
             {/* </FormControl> */}
           </Grid>
         </Grid>
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          // disabled={sending}
+          onClick={onSearch}
+        >
+          Search
+        </Button>
       </Box>
-      <List />
+      {bikes && <List bikes={bikes} />}
     </Box>
   );
 };

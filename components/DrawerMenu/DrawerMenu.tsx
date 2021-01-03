@@ -12,6 +12,8 @@ import {
 } from '@material-ui/core';
 import PeopleIcon from '@material-ui/icons/People';
 import DirectionsBikeIcon from '@material-ui/icons/DirectionsBike';
+import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+
 import { useRouter } from 'next/router';
 
 const styles = (theme) => ({
@@ -73,7 +75,7 @@ const DrawerMenu = ({ open, toggleDrawerHandler, classes }) => {
           </ListItemIcon>
           <ListItemText primary={'Bikes'} />
         </ListItem>
-        {/* <ListItem
+        <ListItem
           button
           onClick={() => goTo('/admin/bookings')}
           className={
@@ -84,7 +86,7 @@ const DrawerMenu = ({ open, toggleDrawerHandler, classes }) => {
             <ConfirmationNumberIcon />
           </ListItemIcon>
           <ListItemText primary={'Bookings'} />
-        </ListItem> */}
+        </ListItem>
       </List>
     </div>
   );
