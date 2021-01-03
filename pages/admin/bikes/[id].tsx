@@ -5,8 +5,11 @@ import ConfirmDialog from '../../../components/Dialogs/ConfirmDialog';
 import BikeForm from '../../../components/Bike/BikeForm';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Api from '../../../utils/api';
+import { useSession } from 'next-auth/client';
 
 const BikeDetail = () => {
+  const [session, loading] = useSession();
+
   const router = useRouter();
   const { id } = router.query;
 
@@ -16,7 +19,6 @@ const BikeDetail = () => {
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
 
   const [error, setError] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
 
   const getBike = async () => {
@@ -44,6 +46,18 @@ const BikeDetail = () => {
       console.error('Error deleting bike: ', result.error);
     }
   };
+
+  if (loading) {
+    return <h1>Loading</h1>;
+  }
+
+  if (!session) {
+    return <h1>Access denied: Not logged in</h1>;
+  }
+
+  if (session && session.user.role !== 'manager') {
+    return <h1>Access denied: Not proper priviledges</h1>;
+  }
 
   return (
     <Grid container justify="center">

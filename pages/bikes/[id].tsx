@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 
 import DatetimeSearch from '../../components/DatetimeSearch/DatetimeSearch';
 import Api from '../../utils/api';
+import { useSession } from 'next-auth/client';
 
 const bikeModel = {
   id: 1,
@@ -52,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Bike = () => {
   const router = useRouter();
+  const [session, loading] = useSession();
   const { id } = router.query;
   const today = new Date();
   const tomorrowDate = addDateOneDay(today);
@@ -85,6 +87,10 @@ const Bike = () => {
 
   const onBookingHandler = async () => {
     setError(null);
+
+    if (!session) {
+      return setError('You need to log in to book');
+    }
     // TODO: loading
     if (!pickupDate) {
       return setError('Select date and time for pickup');

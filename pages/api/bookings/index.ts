@@ -22,11 +22,24 @@ export default async function handler(
 ) {
   const { method } = req;
 
+  const session = await getSession({ req });
+
+  const checkAccess = () => {
+    if (!session) {
+      // Signed in
+      res.status(401).json('401 - Unauthorized. Please log in');
+      res.end();
+      return false;
+    }
+    return true;
+  };
+
   await dbConnect();
 
   switch (method) {
     case 'GET':
       try {
+        if (!checkAccess()) return;
         const query: SearchQuery = req.query;
 
         // query:  {
@@ -71,6 +84,7 @@ export default async function handler(
       break;
     case 'POST':
       try {
+        if (!checkAccess()) return;
         const bookingData = JSON.parse(req.body);
 
         const user = await User.findOne({ _id: bookingData.user });

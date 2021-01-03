@@ -9,6 +9,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { Link } from '@material-ui/core';
+import { useSession, getSession, signOut } from 'next-auth/client';
+import { useRouter } from 'next/router';
 
 const styles = (theme) => ({
   grow: {
@@ -32,16 +34,11 @@ const styles = (theme) => ({
   link: {
     textDecoration: 'none',
   },
-  //   sectionMobile: {
-  //     display: "flex",
-  //     [theme.breakpoints.up("md")]: {
-  //       display: "none"
-  //     }
-  //   }
 });
 
 const Navbar = ({ classes, showMenu = true, openDrawerHandler, ...props }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const router = useRouter();
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -49,6 +46,17 @@ const Navbar = ({ classes, showMenu = true, openDrawerHandler, ...props }) => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const goToProfile = () => {
+    setAnchorEl(null);
+    router.push('/dashboard/me');
+  };
+
+  const goToLogout = () => {
+    signOut();
+    setAnchorEl(null);
+    router.push('/');
   };
 
   const isMenuOpen = Boolean(anchorEl);
@@ -65,11 +73,14 @@ const Navbar = ({ classes, showMenu = true, openDrawerHandler, ...props }) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Log out</MenuItem>
+      <MenuItem onClick={goToProfile}>My account</MenuItem>
+      <MenuItem onClick={goToLogout}>Log out</MenuItem>
     </Menu>
   );
+
+  const [session, loading] = useSession();
+
+  console.log('--> session: ', session);
 
   return (
     <div className={classes.grow}>
@@ -92,21 +103,35 @@ const Navbar = ({ classes, showMenu = true, openDrawerHandler, ...props }) => {
             </Typography>
           </Link>
           <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </div>
+          {session && (
+            <div className={classes.sectionDesktop}>
+              <IconButton
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            </div>
+          )}
+          {!session && (
+            <div className={classes.sectionDesktop}>
+              <Link
+                className={classes.link}
+                color="inherit"
+                href="/api/auth/signin"
+              >
+                Log in
+              </Link>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
-      {renderUserMenu}
+      {session && renderUserMenu}
+      {/* {!ession && } */}
     </div>
   );
 };

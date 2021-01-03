@@ -6,9 +6,11 @@ import ConfirmDialog from '../../../components/Dialogs/ConfirmDialog';
 import UserBookings from '../../../components/Bookings/UserBookings';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Api from '../../../utils/api';
+import { useSession } from 'next-auth/client';
 
 const UserDetail = () => {
   const router = useRouter();
+  const [session, loading] = useSession();
   const { id } = router.query;
   const [currentUser, setCurrentUser] = React.useState(null);
 
@@ -43,6 +45,18 @@ const UserDetail = () => {
       console.error('Error deleting user: ', result.error);
     }
   };
+
+  if (loading) {
+    return <h1>Loading</h1>;
+  }
+
+  if (!session) {
+    return <h1>Access denied: Not logged in</h1>;
+  }
+
+  if (session && session.user.role !== 'manager') {
+    return <h1>Access denied: Not proper priviledges</h1>;
+  }
 
   return (
     <Grid container justify="center">

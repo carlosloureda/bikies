@@ -19,6 +19,7 @@ export default function Dashboard({ user }) {
 
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx);
+  console.log('session: ', session);
   if (!session) {
     ctx.res.writeHead(302, { Location: '/' });
     ctx.res.end();

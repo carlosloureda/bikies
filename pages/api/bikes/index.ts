@@ -1,3 +1,4 @@
+import { getSession } from 'next-auth/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import dbConnect from '../../../utils/dbConnect';
@@ -20,6 +21,22 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { method } = req;
+
+  const session = await getSession({ req });
+
+  const checkAccess = () => {
+    if (!session) {
+      // Signed in
+      res.status(401).json('401 - Unauthorized. Please log in');
+      res.end();
+      return false;
+    } else if (session.user.role !== 'manager') {
+      res.status(403).json('403 - Forbidden. Not enough rights');
+      res.end();
+      return false;
+    }
+    return true;
+  };
 
   await dbConnect();
 
@@ -67,6 +84,7 @@ export default async function handler(
       break;
     case 'POST':
       try {
+        if (!checkAccess()) return;
         const bike = await Bike.create(JSON.parse(req.body));
 
         res.status(201).json({ success: true, data: bike });

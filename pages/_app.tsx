@@ -7,6 +7,7 @@ import SiteLayout from '../components/Layouts/SiteLayout';
 import AdminLayout from '../components/Layouts/AdminLayout';
 
 import { Provider } from 'next-auth/client';
+import { useSession, getSession } from 'next-auth/client';
 import 'reflect-metadata';
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -22,6 +23,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const { pathname } = router;
 
+  console.log('>>> pageProps.user: ', pageProps.user);
   if (pathname.startsWith('/admin/')) {
     return (
       <Provider session={pageProps.session}>
@@ -39,6 +41,22 @@ function MyApp({ Component, pageProps }: AppProps) {
       </SiteLayout>
     </Provider>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  const session = await getSession(ctx);
+  console.log('session: ', session);
+  if (!session) {
+    ctx.res.writeHead(302, { Location: '/' });
+    ctx.res.end();
+    return {};
+  }
+
+  return {
+    props: {
+      user: session.user,
+    },
+  };
 }
 
 export default MyApp;

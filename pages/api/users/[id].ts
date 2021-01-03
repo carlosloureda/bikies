@@ -1,3 +1,4 @@
+import { getSession } from 'next-auth/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import dbConnect from '../../../utils/dbConnect';
@@ -14,8 +15,23 @@ export default async function handler(
 
   await dbConnect();
 
+  const session = await getSession({ req });
+  const checkAccess = () => {
+    if (!session) {
+      // Signed in
+      res.status(401).json('401 - Unauthorized. Please log in');
+      res.end();
+      return false;
+    } else if (session.user.role !== 'manager') {
+      res.status(403).json('403 - Forbidden. Not enough rights');
+      res.end();
+      return false;
+    }
+    return true;
+  };
+
   switch (method) {
-    case 'GET' /* Get a model by its ID */:
+    case 'GET':
       try {
         const user = await User.findOne({ _id: id });
         if (!user) {
@@ -29,6 +45,7 @@ export default async function handler(
 
     case 'PUT':
       try {
+        if (!checkAccess()) return;
         let user = await User.findOne({ _id: id });
 
         // if (user) {

@@ -6,6 +6,7 @@ import ConfirmDialog from '../../../components/Dialogs/ConfirmDialog';
 import UserBookings from '../../../components/Bookings/UserBookings';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Api from '../../../utils/api';
+import { useSession } from 'next-auth/client';
 
 const UserDetail = () => {
   const router = useRouter();
@@ -15,8 +16,9 @@ const UserDetail = () => {
   const [mode, setMode] = React.useState('view');
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
   const [error, setError] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
+
+  const [session, loading] = useSession();
 
   const getUser = async () => {
     const result = await Api.get(`api/users/${id}`);
@@ -43,6 +45,18 @@ const UserDetail = () => {
       console.error('Error deleting user: ', result.error);
     }
   };
+
+  if (loading) {
+    return <h1>Loading</h1>;
+  }
+
+  if (!session) {
+    return <h1>Access denied: Not logged in</h1>;
+  }
+
+  if (session && session.user.role !== 'manager') {
+    return <h1>Access denied: Not proper priviledges</h1>;
+  }
 
   return (
     <Grid container justify="center">
