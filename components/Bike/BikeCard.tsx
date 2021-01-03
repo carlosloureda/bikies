@@ -60,7 +60,7 @@ export default function BikeCard({ bike }) {
             {(bike.model && bike.model.substring(0, 1).toUpperCase()) || 'B'}
           </Avatar>
         }
-        title="Bike 1"
+        title={bike.model}
         onClick={() => router.push(`/bikes/${bike._id}`)}
       />
       <CardMedia

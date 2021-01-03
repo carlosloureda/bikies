@@ -1,5 +1,5 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import Image from 'material-ui-image';
 
@@ -12,6 +12,8 @@ import {
   Box,
   Input,
   Grid,
+  Checkbox,
+  FormControlLabel,
 } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
@@ -24,6 +26,7 @@ type Inputs = {
   location: string;
   rating: number;
   image: string;
+  available: boolean;
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -39,6 +42,7 @@ const BikeForm = ({ mode, bike }: { mode: string; bike?: Inputs }) => {
       location: (bike && bike.location) || '',
       rating: (bike && bike.rating) || 0,
       image: (bike && bike.image) || '',
+      available: (bike && bike.available) || true,
     },
   });
   const [rating, setRating] = React.useState(3.6);
@@ -93,7 +97,6 @@ const BikeForm = ({ mode, bike }: { mode: string; bike?: Inputs }) => {
       //   }
       // );
       data.image = 'imagePath';
-
       if (mode === 'create') {
         result = await Api.post(`api/bikes`, JSON.stringify(data));
       } else if (mode === 'edit') {
@@ -159,41 +162,46 @@ const BikeForm = ({ mode, bike }: { mode: string; bike?: Inputs }) => {
               helperText={errors && errors.location && errors.location.message}
               disabled={mode === 'view'}
             />
-          </Box>
-          {mode === 'edit' && (
-            <Rating
-              name="simple-controlled"
-              value={rating}
-              onChange={(event, newValue) => {
-                setRating(newValue);
-              }}
-            />
           )}
+          </Box>
+
+          <Box className={classes.formRow}>
+            <FormControlLabel
+              value={bike.available}
+              control={<Checkbox />}
+              label="Available"
+              name="available"
+              inputRef={register}
+              disabled={mode === 'view'}
+            />
+          </Box>
           {mode === 'view' && (
             <Rating name="read-only" value={rating} readOnly />
           )}
 
+          {/* TODO: fix this */}
           {mode !== 'view' && (
             <Box className={classes.formRow}>
               <Input
                 type="file"
                 name="image"
-                inputRef={register}
-                onChange={(e) => {
-                  const { files } = e.target;
+                // inputRef={register}
+                // value=""
+                // onChange={(e) => {
+                //   const { files } = e.target;
 
-                  if (files && files[0]) {
-                    setImagePath(URL.createObjectURL(files[0]));
-                  } else {
-                    setImagePath(null);
-                  }
+                //   if (files && files[0]) {
+                //     setImagePath(URL.createObjectURL(files[0]));
+                //   } else {
+                //     setImagePath(null);
+                //   }
 
-                  // const storageRef = app.storage().ref();
-                  // const fileRef = storageRef.child(files[0].name);
-                  // fileRef.put(files[0]).then(() => {
-                  //   console.log('Uploaded a file');
-                  // });
-                }}
+                //   // const storageRef = app.storage().ref();
+                //   // const fileRef = storageRef.child(files[0].name);
+                //   // fileRef.put(files[0]).then(() => {
+                //   //   console.log('Uploaded a file');
+                //   // });
+                // }}
               />
             </Box>
           )}

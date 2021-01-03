@@ -6,6 +6,7 @@ export interface IBike {
   location: string;
   rating?: Number;
   image: string;
+  available: boolean;
 }
 
 const BikeSchema: Schema = new Schema({
@@ -29,6 +30,10 @@ const BikeSchema: Schema = new Schema({
   image: {
     type: String,
     required: true,
+  },
+  available: {
+    type: Boolean,
+    default: true,
   },
   // deleted: {
   //   type: Boolean,

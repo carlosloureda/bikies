@@ -12,6 +12,7 @@ type SearchQuery = {
   pageSize?: string;
   pickupDate?: string; //TODO: date
   dropoffDate?: string; //TODO: date
+  available?: boolean;
 };
 
 export default async function handler(
@@ -48,6 +49,7 @@ export default async function handler(
         if (query.model) searchQuery.model = query.model;
         if (query.color) searchQuery.color = query.color;
         if (query.rating) searchQuery.rating = query.rating;
+        if (query.available) searchQuery.available = query.available;
 
         const bikes = await Bike.find(searchQuery).skip(skip).limit(limit);
         const count = await Bike.count(searchQuery);

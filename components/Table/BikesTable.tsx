@@ -6,9 +6,9 @@ import SearchIcon from '@material-ui/icons/Search';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ConfirmDialog from '../Dialogs/ConfirmDialog';
 import Api from '../../utils/api';
+import { Chip } from '@material-ui/core';
 
 const getColumns = (actionButtons) => [
-  // { field: 'id', headerName: 'ID', width: 70 },
   {
     field: 'model',
     headerName: 'Model',
@@ -17,6 +17,22 @@ const getColumns = (actionButtons) => [
   { field: 'color', headerName: 'Color', width: 150 },
   { field: 'location', headerName: 'Location', width: 150 },
   { field: 'rating', headerName: 'Rating', width: 100 },
+  {
+    field: 'available',
+    headerName: 'Available',
+    renderCell: (params: CellParams) => {
+      let { state, available } = params.row;
+      enum Color {
+        primary = 'primary',
+        secondary = 'secondary',
+      }
+      let color: Color = available ? Color['primary'] : Color['secondary'];
+
+      return <Chip label={available ? 'Yes' : 'No'} color={color} />;
+    },
+
+    width: 125,
+  },
   {
     field: '',
     headerName: 'Actions',

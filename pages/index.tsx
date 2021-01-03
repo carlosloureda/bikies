@@ -63,7 +63,7 @@ const Booking = () => {
     setFilers(result.data);
   };
 
-  const getBikes = async (url = 'api/bikes') => {
+  const getBikes = async (url = 'api/bikes?available=true') => {
     // TODO: show bikes free those days
     const result = await Api.get(url);
     if (!result.success) {

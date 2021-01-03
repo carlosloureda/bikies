@@ -30,7 +30,7 @@ const BikeDetail = () => {
   };
 
   React.useEffect(() => {
-    getBike();
+    if (id) getBike();
   }, [id]);
 
   const onDelete = async () => {
