@@ -62,7 +62,7 @@ const BikesTable = () => {
 
   const actionButtons = (params) => {
     const onDetailHandler = (e) => {
-      router.push(`/dashboard/bikes/${params.row.id}`);
+      router.push(`/admin/bikes/${params.row.id}`);
     };
 
     const onDeleteHandler = () => {

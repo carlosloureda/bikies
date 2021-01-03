@@ -13,10 +13,7 @@ const Dashboard = () => {
     <>
       <h1>Users</h1>
       <div>
-        <Button
-          color="primary"
-          onClick={() => router.push('/dashboard/users/new')}
-        >
+        <Button color="primary" onClick={() => router.push('/admin/users/new')}>
           New User
         </Button>
       </div>

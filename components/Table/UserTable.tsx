@@ -114,7 +114,7 @@ export default function UserTable() {
 
   const actionButtons = (params) => {
     const onDetailHandler = (e) => {
-      router.push(`/dashboard/users/${params.row.id}`);
+      router.push(`/admin/users/${params.row.id}`);
     };
 
     const onDeleteHandler = () => {

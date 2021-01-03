@@ -87,7 +87,7 @@ const UserDetail = () => {
 
   const onDelete = () => {
     console.log('Delete user and redirect to users');
-    router.push('/dashboard/users');
+    router.push('/admin/users');
   };
 
   return (

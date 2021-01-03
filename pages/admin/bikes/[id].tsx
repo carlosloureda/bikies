@@ -44,7 +44,7 @@ const UserDetail = () => {
 
   const onDelete = () => {
     console.log('Delete bike and redirect to nikes');
-    router.push('/dashboard/bikes');
+    router.push('/admin/bikes');
   };
 
   return (

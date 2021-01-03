@@ -37,7 +37,7 @@ const BikeForm = ({ mode }: { mode: string }) => {
       // TODO: on bike create redirect to id
       const id = 3;
       if (mode === 'create') {
-        router.push(`/dashboard/bikes/${id}`);
+        router.push(`/admin/bikes/${id}`);
       }
     }
   };
