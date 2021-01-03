@@ -128,10 +128,6 @@ export default function UsersTable() {
   }, []);
 
   const actionButtons = (params) => {
-    const onDetailHandler = (e) => {
-      router.push(`/admin/bookings/${params.row.id}`);
-    };
-
     const onCancelHandler = () => {
       setOpen(true);
       setBooking(params.row);

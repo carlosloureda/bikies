@@ -29,7 +29,7 @@ const UserDetail = () => {
   };
 
   React.useEffect(() => {
-    getUser();
+    if (id) getUser();
   }, [id]);
 
   const onDelete = async () => {
@@ -99,8 +99,7 @@ const UserDetail = () => {
           </Grid>
         )}
         {currentUser && <UserForm mode={mode} user={currentUser} />}
-        {/* TODO: show user bookings */}
-        {/* <UserBookings /> */}
+        {currentUser && <UserBookings user={currentUser} />}
 
         <ConfirmDialog
           title="Delete User?"
