@@ -1,7 +1,6 @@
 import List from '../components/Bike/List';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
 
 import DatetimeSearch from '../components/DatetimeSearch/DatetimeSearch';
 import React from 'react';
@@ -51,7 +50,7 @@ const Booking = () => {
     location: '',
     model: '',
     color: '',
-    rating: '',
+    rating: 0,
   });
 
   const getFilters = async () => {
@@ -66,6 +65,7 @@ const Booking = () => {
   const getBikes = async (url = 'api/bikes?available=true') => {
     // TODO: show bikes free those days
     const result = await Api.get(url);
+    console.log('result: ', result);
     if (!result.success) {
       setError(result.error);
       return;
@@ -79,7 +79,8 @@ const Booking = () => {
   }, [pickupDate, dropoffDate]);
 
   const onSearch = () => {
-    let url = `api/bikes?pickupDate=${pickupDate}&dropoffDate=${dropoffDate}`;
+    let url = `api/bikes?available=true&pickupDate=${pickupDate}&dropoffDate=${dropoffDate}`;
+    console.log('selectedFilters: ', selectedFilters);
     if (selectedFilters.location) {
       url += `&location=${selectedFilters.location}`;
     }
@@ -99,7 +100,7 @@ const Booking = () => {
     <Box>
       <Box
         style={{
-          backgroundColor: '#835990',
+          // backgroundColor: '#835990',
           padding: '3rem 2rem',
           marginBottom: '2rem',
         }}
@@ -121,6 +122,12 @@ const Booking = () => {
               options={
                 filters.locations && filters.locations.map((option) => option)
               }
+              onInput={(event) => {
+                setSelectedFilters({
+                  ...selectedFilters,
+                  location: event.target.value,
+                });
+              }}
               onChange={(event, value) => {
                 setSelectedFilters({
                   ...selectedFilters,
@@ -141,6 +148,12 @@ const Booking = () => {
           <Grid item lg={3} sm={6} xs={12}>
             <Autocomplete
               freeSolo
+              onInput={(event) => {
+                setSelectedFilters({
+                  ...selectedFilters,
+                  model: event.target.value,
+                });
+              }}
               onChange={(event, value) => {
                 setSelectedFilters({
                   ...selectedFilters,
@@ -164,6 +177,12 @@ const Booking = () => {
             <Autocomplete
               freeSolo
               disableClearable
+              onInput={(event) => {
+                setSelectedFilters({
+                  ...selectedFilters,
+                  color: event.target.value,
+                });
+              }}
               onChange={(event, value) => {
                 setSelectedFilters({
                   ...selectedFilters,
@@ -192,8 +211,8 @@ const Booking = () => {
             >
               <Rating
                 name="simple-controlled"
-                value={2}
-                precision={0.1}
+                value={selectedFilters.rating}
+                precision={1}
                 onChange={(event, value) => {
                   setSelectedFilters({
                     ...selectedFilters,
@@ -208,13 +227,13 @@ const Booking = () => {
           variant="contained"
           color="primary"
           type="submit"
-          // disabled={sending}
           onClick={onSearch}
         >
           Search
         </Button>
       </Box>
       {bikes && <List bikes={bikes} />}
+      {!bikes || (!bikes.length && <h1>No bikes for this criteria</h1>)}
     </Box>
   );
 };

@@ -26,6 +26,7 @@ const BikeSchema: Schema = new Schema({
   },
   rating: {
     type: Number,
+    default: 5,
   },
   image: {
     type: String,

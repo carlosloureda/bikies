@@ -8,7 +8,7 @@ type SearchQuery = {
   location?: string;
   model?: string;
   color?: string;
-  rating?: string;
+  rating?: object | string;
   page?: string;
   pageSize?: string;
   pickupDate?: string; //TODO: date
@@ -65,9 +65,14 @@ export default async function handler(
         if (query.location) searchQuery.location = query.location;
         if (query.model) searchQuery.model = query.model;
         if (query.color) searchQuery.color = query.color;
-        if (query.rating) searchQuery.rating = query.rating;
+        if (query.rating) {
+          searchQuery.rating = {
+            $gte: parseInt(query.rating as string),
+          };
+        }
         if (query.available) searchQuery.available = query.available;
 
+        console.log('searchQuery: ', searchQuery);
         const bikes = await Bike.find(searchQuery).skip(skip).limit(limit);
         const count = await Bike.count(searchQuery);
 
