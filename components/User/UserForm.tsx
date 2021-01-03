@@ -8,7 +8,7 @@ import { TextField, Button, Grid, Box, MenuItem } from '@material-ui/core';
 import ReactHookFormSelect from '../atoms/ReactHookFormSelect';
 
 type Inputs = {
-  name: string;
+  firstName: string;
   lastName: string;
   email: string;
   role: string;
@@ -21,7 +21,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const UserForm = ({ mode, user }: { mode: string; user?: Inputs }) => {
-  const { register, handleSubmit, watch, errors, control } = useForm<Inputs>();
+  const { register, handleSubmit, watch, errors, control } = useForm<Inputs>({
+    defaultValues: {
+      firstName: (user && user.firstName) || '',
+      lastName: (user && user.lastName) || '',
+      email: (user && user.email) || '',
+      role: (user && user.role) || 'user',
+    },
+  });
   const router = useRouter();
   const classes = useStyles();
 
@@ -31,7 +38,6 @@ const UserForm = ({ mode, user }: { mode: string; user?: Inputs }) => {
     console.log('data: ', data);
     setError('');
     if (!errors || !Object.values(errors).length) {
-      console.log('Submit form wth data', data);
       const server = process.env.NEXT_PUBLIC_SERVER_URL;
       const response = await fetch(`${server}/api/users`, {
         method: 'POST',
@@ -69,10 +75,9 @@ const UserForm = ({ mode, user }: { mode: string; user?: Inputs }) => {
             name="firstName"
             label="First Name"
             inputRef={register({ required: true })}
-            error={Boolean(errors.name)}
-            helperText={errors && errors.name && errors.name.message}
+            error={Boolean(errors.firstName)}
+            helperText={errors && errors.firstName && errors.firstName.message}
             disabled={mode === 'view'}
-            value={user && user.name}
           />
         </Box>
         <Box className={classes.formRow}>
@@ -83,7 +88,6 @@ const UserForm = ({ mode, user }: { mode: string; user?: Inputs }) => {
             error={Boolean(errors.lastName)}
             helperText={errors && errors.lastName && errors.lastName.message}
             disabled={mode === 'view'}
-            value={user && user.lastName}
           />
         </Box>
 
@@ -102,7 +106,6 @@ const UserForm = ({ mode, user }: { mode: string; user?: Inputs }) => {
             error={Boolean(errors.email)}
             helperText={errors && errors.email && errors.email.message}
             disabled={mode === 'view'}
-            value={user && user.email}
           />
         </Box>
         <Box className={classes.formRow}>
@@ -112,6 +115,7 @@ const UserForm = ({ mode, user }: { mode: string; user?: Inputs }) => {
             label="Role"
             control={control}
             defaultValue={(user && user.role) || 'manager'}
+            disabled={mode === 'view'}
           >
             <MenuItem value="user">User</MenuItem>
             <MenuItem value="manager">Manager</MenuItem>

@@ -4,72 +4,8 @@ import UserForm from '../../../components/User/UserForm';
 import { Button } from '@material-ui/core';
 import ConfirmDialog from '../../../components/Dialogs/ConfirmDialog';
 import UserBookings from '../../../components/Bookings/UserBookings';
-
-const users = [
-  {
-    id: 1,
-    email: 'email1@mail.com',
-    lastName: 'Snow',
-    name: 'Jon',
-    role: 'manager',
-  },
-  {
-    id: 2,
-    email: 'email2@mail.com',
-    lastName: 'Lannister',
-    name: 'Cersei',
-    role: 'user',
-  },
-  {
-    id: 3,
-    email: 'email3@mail.com',
-    lastName: 'Lannister',
-    name: 'Jaime',
-    role: 'user',
-  },
-  {
-    id: 4,
-    email: 'email4@mail.com',
-    lastName: 'Stark',
-    name: 'Arya',
-    role: 'user',
-  },
-  {
-    id: 5,
-    email: 'email5@mail.com',
-    lastName: 'Targaryen',
-    name: 'Daenerys',
-    role: 'user',
-  },
-  {
-    id: 6,
-    email: 'email6@mail.com',
-    lastName: 'Melisandre',
-    name: null,
-    role: 'user',
-  },
-  {
-    id: 7,
-    email: 'email7@mail.com',
-    lastName: 'Clifford',
-    name: 'Ferrara',
-    role: 'user',
-  },
-  {
-    id: 8,
-    email: 'email8@mail.com',
-    lastName: 'Frances',
-    name: 'Rossini',
-    role: 'user',
-  },
-  {
-    id: 9,
-    email: 'email9@mail.com',
-    lastName: 'Roxie',
-    name: 'Harvey',
-    role: 'user',
-  },
-];
+import { Alert, AlertTitle } from '@material-ui/lab';
+import Api from '../../../utils/api';
 
 const UserDetail = () => {
   const router = useRouter();
@@ -78,21 +14,45 @@ const UserDetail = () => {
 
   const [mode, setMode] = React.useState('view');
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
+  const [error, setError] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [deleting, setDeleting] = React.useState(false);
+
+  const getUser = async () => {
+    const result = await Api.get(`api/users/${id}`);
+    if (result.success) {
+      setCurrentUser(result.data);
+    } else {
+      setError('Error fetching user');
+      console.error('Error fetching user: ', result.error);
+    }
+  };
 
   React.useEffect(() => {
-    let user = users.find((user) => user.id === parseInt(id as string));
-    if (user) setCurrentUser(user);
-    else setCurrentUser(null);
-  }, []);
+    getUser();
+  }, [id]);
 
-  const onDelete = () => {
-    console.log('Delete user and redirect to users');
-    router.push('/admin/users');
+  const onDelete = async () => {
+    setDeleting(true);
+    const result = await Api.delete(`api/users/${id}`);
+    if (result.success) {
+      router.push('/admin/users');
+    } else {
+      setError('Error deleting user');
+      console.error('Error deleting user: ', result.error);
+    }
+    setDeleting(false);
   };
 
   return (
     <>
-      <h1>User Detail: {id}</h1>
+      {error && (
+        <Alert severity="error">
+          <AlertTitle>Error</AlertTitle>
+          {error}
+        </Alert>
+      )}
+      <h1>User Detail</h1>
 
       {mode === 'view' && (
         <>
@@ -107,6 +67,7 @@ const UserDetail = () => {
             variant="contained"
             color="secondary"
             onClick={() => setOpenDeleteModal(true)}
+            disabled={deleting}
           >
             Delete
           </Button>
@@ -121,7 +82,7 @@ const UserDetail = () => {
           Cancel
         </Button>
       )}
-      <UserForm mode={mode} user={currentUser} />
+      {currentUser && <UserForm mode={mode} user={currentUser} />}
       {/* TODO: show user bookings */}
       {/* <UserBookings /> */}
 

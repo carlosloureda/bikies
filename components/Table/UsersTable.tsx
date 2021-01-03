@@ -5,6 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ConfirmDialog from '../Dialogs/ConfirmDialog';
+import Api from '../../utils/api';
 
 const getColumns = (actionButtons) => [
   {
@@ -40,21 +41,23 @@ export default function UsersTable() {
   const router = useRouter();
 
   async function getUsers({ page = 1, pageSize = 5 }) {
-    const server = process.env.NEXT_PUBLIC_SERVER_URL;
-    const response = await fetch(
-      `${server}/api/users?page=${page}&pageSize=${pageSize}`,
-      {
-        method: 'GET',
-        mode: 'cors',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-      }
-    );
-    const result = await response.json();
+    // const server = process.env.NEXT_PUBLIC_SERVER_URL;
+    // const response = await fetch(
+    //   `${server}/api/users?page=${page}&pageSize=${pageSize}`,
+    //   {
+    //     method: 'GET',
+    //     mode: 'cors',
+    //     credentials: 'same-origin',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     redirect: 'follow',
+    //     referrerPolicy: 'no-referrer',
+    //   }
+    // );
+    // const result = await response.json();
+
+    const result = await Api.get(`api/users?page=${page}&pageSize=${pageSize}`);
     console.log('result: ', result);
 
     // TODO: errors
@@ -112,9 +115,12 @@ export default function UsersTable() {
 
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState(null);
-  const onDelete = () => {
-    let _users = users.filter((user) => user._id !== id);
-    setUsers(_users);
+  const onDelete = async () => {
+    const result = await Api.delete(`api/users/${id}`);
+    if (result.success) {
+      let _users = users.filter((user) => user._id !== id);
+      setUsers(_users);
+    }
   };
 
   const handlePageChange = ({ page, pageSize, ...params }) => {
