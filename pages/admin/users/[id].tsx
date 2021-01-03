@@ -38,10 +38,10 @@ const UserDetail = () => {
     if (result.success) {
       router.push('/admin/users');
     } else {
+      setDeleting(false);
       setError('Error deleting user');
       console.error('Error deleting user: ', result.error);
     }
-    setDeleting(false);
   };
 
   return (

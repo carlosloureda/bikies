@@ -15,14 +15,6 @@ npm install
 npm run dev
 ```
 
-## Proccess
+# Settings
 
-- DB on Mongo, if you want to create your own DB on atlas [follow this guide](https://docs.atlas.mongodb.com/getting-started)
-
-- oAuth:
-
-https://blog.logrocket.com/using-authentication-in-next-js/
-
--- https://github.com/nextauthjs/next-auth/issues/833
-
--- https://next-auth.js.org/tutorials/securing-pages-and-api-routes
+- You need a cloudinary account

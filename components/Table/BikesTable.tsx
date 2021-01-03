@@ -5,46 +5,23 @@ import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ConfirmDialog from '../Dialogs/ConfirmDialog';
-
-let _bikes = [
-  { id: 1, model: 'model1', color: 'red', location: 'La Coruña', rating: 4 },
-  { id: 2, model: 'model2', color: 'black', location: 'Lugo', rating: 4 },
-  { id: 3, model: 'model3', color: 'red', location: 'Madrid', rating: 1 },
-  { id: 4, model: 'model4', color: 'blue', location: 'La Coruña', rating: 5 },
-  { id: 5, model: 'model5', color: 'yellow', location: 'Orense', rating: 4.2 },
-  {
-    id: 6,
-    model: 'model6',
-    color: 'black',
-    location: 'Barcelona',
-    rating: 3.6,
-  },
-  { id: 7, model: 'model7', color: 'red', location: 'La Coruña', rating: 2 },
-  { id: 8, model: 'model8', color: 'brown', location: 'Valencia', rating: 4.8 },
-  {
-    id: 9,
-    model: 'model9',
-    color: 'white',
-    location: 'La Coruña',
-    rating: 2.9,
-  },
-];
+import Api from '../../utils/api';
 
 const getColumns = (actionButtons) => [
   // { field: 'id', headerName: 'ID', width: 70 },
   {
     field: 'model',
     headerName: 'Model',
-    width: 150,
+    width: 250,
   },
-  { field: 'color', headerName: 'Color', width: 130 },
-  { field: 'location', headerName: 'Location', width: 130 },
-  { field: 'rating', headerName: 'Rating', width: 50 },
+  { field: 'color', headerName: 'Color', width: 150 },
+  { field: 'location', headerName: 'Location', width: 150 },
+  { field: 'rating', headerName: 'Rating', width: 100 },
   {
     field: '',
     headerName: 'Actions',
     sortable: false,
-    width: 100,
+    width: 150,
     disableClickEventBubbling: true,
     renderCell: (params: CellParams) => {
       return actionButtons(params);
@@ -52,12 +29,28 @@ const getColumns = (actionButtons) => [
   },
 ];
 
+const PAGE_SIZE = 5;
+
 const BikesTable = () => {
-  const [rows, setRows] = React.useState([]);
+  const [bikes, setBikes] = React.useState([]);
+  const [count, setCount] = React.useState(0);
   const router = useRouter();
 
+  async function getBikes({ page = 1, pageSize = 5 }) {
+    const result = await Api.get(`api/bikes?page=${page}&pageSize=${pageSize}`);
+
+    if (result.success) {
+      result.data.bikes = result.data.bikes.map((d) => {
+        d.id = d._id;
+        return d;
+      });
+      setBikes(result.data.bikes);
+      setCount(result.data.count);
+    }
+  }
+
   React.useEffect(() => {
-    setRows(_bikes);
+    getBikes({ page: 1, pageSize: 5 });
   }, []);
 
   const actionButtons = (params) => {
@@ -66,19 +59,14 @@ const BikesTable = () => {
     };
 
     const onDeleteHandler = () => {
-      //TODO: delete
       setOpen(true);
       setId(params.row.id);
-      //  let _rows  = rows.filter(row =>  row.id !== params.row.id);
-      // setRows(_rows);
     };
 
     return (
       <>
         <IconButton
           edge="start"
-          // id="eo"
-          // className={classes.menuButton}
           color="inherit"
           aria-label="open drawer"
           onClick={onDetailHandler}
@@ -87,7 +75,6 @@ const BikesTable = () => {
         </IconButton>
         <IconButton
           edge="start"
-          // className={classes.menuButton}
           color="inherit"
           aria-label="open drawer"
           onClick={onDeleteHandler}
@@ -100,9 +87,16 @@ const BikesTable = () => {
 
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState(null);
-  const onDelete = () => {
-    let _rows = rows.filter((row) => row.id !== id);
-    setRows(_rows);
+
+  const onDelete = async () => {
+    const result = await Api.delete(`api/bikes/${id}`);
+    if (result.success) {
+      getBikes({ page: 1, pageSize: PAGE_SIZE });
+    }
+  };
+
+  const handlePageChange = ({ page, pageSize, ...params }) => {
+    getBikes({ page, pageSize });
   };
 
   return (
@@ -115,7 +109,15 @@ const BikesTable = () => {
       >
         Are you sure you want to delete this bike?
       </ConfirmDialog>
-      <DataGrid rows={rows} columns={getColumns(actionButtons)} pageSize={5} />
+
+      <DataGrid
+        rows={bikes}
+        columns={getColumns(actionButtons)}
+        pageSize={PAGE_SIZE}
+        paginationMode="server"
+        rowCount={count}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

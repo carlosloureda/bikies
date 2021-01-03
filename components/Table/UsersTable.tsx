@@ -41,22 +41,6 @@ export default function UsersTable() {
   const router = useRouter();
 
   async function getUsers({ page = 1, pageSize = 5 }) {
-    // const server = process.env.NEXT_PUBLIC_SERVER_URL;
-    // const response = await fetch(
-    //   `${server}/api/users?page=${page}&pageSize=${pageSize}`,
-    //   {
-    //     method: 'GET',
-    //     mode: 'cors',
-    //     credentials: 'same-origin',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     redirect: 'follow',
-    //     referrerPolicy: 'no-referrer',
-    //   }
-    // );
-    // const result = await response.json();
-
     const result = await Api.get(`api/users?page=${page}&pageSize=${pageSize}`);
     console.log('result: ', result);
 
@@ -71,6 +55,7 @@ export default function UsersTable() {
     } else {
     }
   }
+
   React.useEffect(() => {
     getUsers({ page: 1, pageSize: 5 });
   }, []);
@@ -81,11 +66,8 @@ export default function UsersTable() {
     };
 
     const onDeleteHandler = () => {
-      //TODO: delete
       setOpen(true);
       setId(params.row.id);
-      //  let _rows  = rows.filter(row =>  row.id !== params.row.id);
-      // setRows(_rows);
     };
 
     return (
@@ -115,11 +97,13 @@ export default function UsersTable() {
 
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState(null);
+
   const onDelete = async () => {
     const result = await Api.delete(`api/users/${id}`);
     if (result.success) {
-      let _users = users.filter((user) => user._id !== id);
-      setUsers(_users);
+      // let _users = users.filter((user) => user._id !== id);
+      // setUsers(_users);
+      getUsers({ page: 1, pageSize: PAGE_SIZE });
     }
   };
 
