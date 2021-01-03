@@ -61,7 +61,7 @@ export default function BikeCard({ bike }) {
           </Avatar>
         }
         title="Bike 1"
-        onClick={() => router.push(`/bikes/${bike}`)}
+        onClick={() => router.push(`/bikes/${bike._id}`)}
       />
       <CardMedia
         className={classes.media}

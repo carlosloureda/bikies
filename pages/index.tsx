@@ -11,10 +11,8 @@ import Rating from '@material-ui/lab/Rating';
 import { makeStyles } from '@material-ui/core';
 import Api from '../utils/api';
 
-// TODO: header - login/logout
-// TODO: footer
-
-const disabledDates = ['Wed Dec 30 2020', 'Mon Dec 14 2020'];
+// const disabledDates = ['Wed Dec 30 2020', 'Mon Dec 14 2020'];
+const disabledDates = [];
 
 const addDateOneDay = (date: Date) => {
   const dateCp = new Date(date);
@@ -204,11 +202,6 @@ const Booking = () => {
                 }}
               />
             </Box>
-            {/* <FormControl style={{ border: '1px black solid' }}> */}
-            {/* <Typography variant="body2" color="textSecondary" component="span">
-                By rating
-              </Typography> */}
-            {/* </FormControl> */}
           </Grid>
         </Grid>
         <Button

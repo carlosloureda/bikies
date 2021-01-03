@@ -100,7 +100,7 @@ const getColumns = (actionButtons) => [
 
 const PAGE_SIZE = 5;
 
-export default function UsersTable() {
+export default function BookingsTable() {
   const [bookings, setBookings] = React.useState([]);
   const [count, setCount] = React.useState(0);
   const router = useRouter();
@@ -164,7 +164,7 @@ export default function UsersTable() {
   return (
     <div style={{ height: 400, width: '100%' }}>
       <ConfirmDialog
-        title="Delete Booking?"
+        title="Cancel Booking?"
         open={open}
         setOpen={setOpen}
         onConfirm={onCancel}

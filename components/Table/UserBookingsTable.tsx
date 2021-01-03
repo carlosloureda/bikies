@@ -2,23 +2,22 @@ import * as React from 'react';
 import {
   CellParams,
   DataGrid,
+  GridApi,
   ValueGetterParams,
 } from '@material-ui/data-grid';
-
+import { useRouter } from 'next/router';
 import IconButton from '@material-ui/core/IconButton';
 import BlockIcon from '@material-ui/icons/Block';
-import { Box, Chip, Grid, Link } from '@material-ui/core';
-import Api from '../../utils/api';
 import ConfirmDialog from '../Dialogs/ConfirmDialog';
-
-const PAGE_SIZE = 5;
+import Api from '../../utils/api';
+import { Chip, Link } from '@material-ui/core';
 
 const diffDays = (date2: Date, date1: Date) => {
   const diff = date2.getTime() - date1.getTime();
   return diff / (1000 * 3600 * 24);
 };
 
-const getColumnsAdmin = (actionButtons) => [
+const getColumns = (actionButtons) => [
   {
     field: 'model',
     // label: `${bike.model}`,
@@ -99,89 +98,16 @@ const getColumnsAdmin = (actionButtons) => [
   },
 ];
 
-const getColumnsUser = (actionButtons) => [
-  {
-    field: 'model',
-    // label: `${bike.model}`,
-    headerName: 'Bike',
-    width: 200,
-    renderCell: (params: CellParams) => {
-      return (
-        <Link href={`/bikes/${params.row.bike._id}`}>
-          {params.row.bike.model}
-        </Link>
-      );
-    },
-  },
-  {
-    field: 'days',
-    headerName: 'Days',
-    valueGetter: (params: ValueGetterParams) => {
-      const date2 = new Date(params.row.endDate);
-      const date1 = new Date(params.row.startDate);
-      return diffDays(date2, date1);
-    },
-    width: 100,
-  },
-  {
-    field: 'startDate',
-    headerName: 'Start date',
-    valueGetter: (params: ValueGetterParams) =>
-      new Date(params.row.startDate).toLocaleString(),
-    width: 200,
-  },
-  {
-    field: 'endDate',
-    headerName: 'End date',
-    valueGetter: (params: ValueGetterParams) =>
-      new Date(params.row.endDate).toLocaleString(),
-    width: 200,
-  },
-  { field: 'rating', headerName: 'Rating', width: 130 },
-  {
-    field: 'state',
-    headerName: 'State',
-    renderCell: (params: CellParams) => {
-      let { state } = params.row;
-      enum Color {
-        primary = 'primary',
-        secondary = 'secondary',
-        default = 'default',
-      }
-      let color: Color = Color['default'];
-      if (state === 'active') color = Color['primary'];
-      else if (state === 'cancelled') color = Color['secondary'];
+const PAGE_SIZE = 5;
 
-      return <Chip label={params.row.state} color={color} />;
-    },
-    width: 130,
-  },
-  {
-    field: '',
-    headerName: 'Actions',
-    sortable: false,
-    width: 150,
-    disableClickEventBubbling: true,
-    renderCell: (params: CellParams) => {
-      return actionButtons(params);
-    },
-  },
-];
-
-// bike Id
-// startDate y endDate
-// rating for that booking
-
-const UserBookings = ({ user }) => {
-  console.log('user: ', user);
+export default function UsersBookingsTable() {
   const [bookings, setBookings] = React.useState([]);
-  const [booking, setBooking] = React.useState(null);
   const [count, setCount] = React.useState(0);
-  const [open, setOpen] = React.useState(false);
+  const router = useRouter();
 
   async function getBookings({ page = 1, pageSize = 5 }) {
     const result = await Api.get(
-      `api/bookings?page=${page}&pageSize=${pageSize}&user=${user._id}`
+      `api/bookings?page=${page}&pageSize=${pageSize}`
     );
 
     if (result.success) {
@@ -191,7 +117,6 @@ const UserBookings = ({ user }) => {
       });
       setBookings(result.data.bookings);
       setCount(result.data.count);
-      console.log('bookings: ', bookings);
     }
   }
 
@@ -199,13 +124,8 @@ const UserBookings = ({ user }) => {
     getBookings({ page: 1, pageSize: 5 });
   }, []);
 
-  const handlePageChange = ({ page, pageSize, ...params }) => {
-    getBookings({ page, pageSize });
-  };
-
   const actionButtons = (params) => {
     const onCancelHandler = () => {
-      console.log('cancelling');
       setOpen(true);
       setBooking(params.row);
     };
@@ -225,7 +145,8 @@ const UserBookings = ({ user }) => {
     return null;
   };
 
-  const getColumnsFn = user.role === 'user' ? getColumnsUser : getColumnsAdmin;
+  const [open, setOpen] = React.useState(false);
+  const [booking, setBooking] = React.useState(null);
 
   const onCancel = async () => {
     booking.state = 'cancelled';
@@ -233,6 +154,10 @@ const UserBookings = ({ user }) => {
     if (result.success) {
       getBookings({ page: 1, pageSize: PAGE_SIZE });
     }
+  };
+
+  const handlePageChange = ({ page, pageSize, ...params }) => {
+    getBookings({ page, pageSize });
   };
 
   return (
@@ -247,7 +172,7 @@ const UserBookings = ({ user }) => {
       </ConfirmDialog>
       <DataGrid
         rows={bookings}
-        columns={getColumnsFn(actionButtons)}
+        columns={getColumns(actionButtons)}
         pageSize={PAGE_SIZE}
         paginationMode="server"
         rowCount={count}
@@ -255,6 +180,4 @@ const UserBookings = ({ user }) => {
       />
     </div>
   );
-};
-
-export default UserBookings;
+}
