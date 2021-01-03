@@ -123,7 +123,7 @@ const UserDetail = () => {
       )}
       <UserForm mode={mode} user={currentUser} />
       {/* TODO: show user bookings */}
-      <UserBookings />
+      {/* <UserBookings /> */}
 
       <ConfirmDialog
         title="Delete User?"

@@ -1,27 +1,30 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
 import { useRouter } from 'next/router';
+import { Box, Grid, Typography } from '@material-ui/core';
 
-import UserTable from '../../../components/Table/UserTable';
+import UsersTable from '../../../components/Table/UsersTable';
 
 const Dashboard = () => {
-  const [openMenu, setOpenMenu] = React.useState(false);
-
   const router = useRouter();
 
   return (
-    <>
-      <h1>Users</h1>
-      <div>
-        <Button color="primary" onClick={() => router.push('/admin/users/new')}>
-          New User
-        </Button>
-      </div>
-      {/* TODO: show users, filter, edit, delete ? */}
-      {/* TODO: show user detail */}
-      {/* TODO: create user button */}
-      <UserTable />
-    </>
+    <Grid container justify="center">
+      <Grid item xs={12}>
+        <Typography variant="h2" component="h2" align="center">
+          Users
+        </Typography>
+        <Box>
+          <Button
+            color="primary"
+            onClick={() => router.push('/admin/users/new')}
+          >
+            New User
+          </Button>
+        </Box>
+        <UsersTable />
+      </Grid>
+    </Grid>
   );
 };
 

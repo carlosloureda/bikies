@@ -14,8 +14,21 @@ export default async function handler(
   switch (method) {
     case 'GET':
       try {
-        const users = await User.find({});
-        res.status(200).json({ success: true, data: users });
+        const query = req.query;
+
+        const page = (query.page && parseInt(query.page as string) - 1) || 0;
+        const limit =
+          (query.pageSize && parseInt(query.pageSize as string)) || 0;
+        const skip = page * limit;
+        const users = await User.find({}).skip(skip).limit(limit);
+        const count = await User.count({});
+        res.status(200).json({
+          success: true,
+          data: {
+            users,
+            count,
+          },
+        });
       } catch (error) {
         res.status(400).json({ success: false, error: error.message });
       }

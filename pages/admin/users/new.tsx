@@ -5,25 +5,7 @@ import UserForm from '../../../components/User/UserForm';
 
 const AddUser = () => {
   return (
-    // <Box
-    //   style={{
-    //     backgroundColor: 'red',
-
-    //   }}
-
-    // >
-
-    //   <h1>Create User</h1>
-    //   <UserForm mode="create" />
-    // </Box>
-
-    <Grid
-      // style={{
-      //   backgroundColor: 'red',
-      // }}
-      container
-      justify="center"
-    >
+    <Grid container justify="center">
       <Grid item>
         <Typography variant="h2" component="h2" align="center">
           Create User
