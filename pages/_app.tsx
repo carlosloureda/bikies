@@ -1,10 +1,14 @@
 import React from 'react';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-
 import '../styles/globals.css';
+
 import SiteLayout from '../components/Layouts/SiteLayout';
 import AdminLayout from '../components/Layouts/AdminLayout';
+
+import { Provider } from 'next-auth/client';
+import { useSession, getSession } from 'next-auth/client';
+import 'reflect-metadata';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -21,17 +25,36 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   if (pathname.startsWith('/admin/')) {
     return (
-      <AdminLayout>
-        <Component {...pageProps}></Component>
-      </AdminLayout>
+      <Provider session={pageProps.session}>
+        <AdminLayout>
+          <Component {...pageProps}></Component>
+        </AdminLayout>
+      </Provider>
     );
   }
 
   return (
-    <SiteLayout>
-      <Component {...pageProps}></Component>
-    </SiteLayout>
+    <Provider session={pageProps.session}>
+      <SiteLayout>
+        <Component {...pageProps}></Component>
+      </SiteLayout>
+    </Provider>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  const session = await getSession(ctx);
+  if (!session) {
+    ctx.res.writeHead(302, { Location: '/' });
+    ctx.res.end();
+    return {};
+  }
+
+  return {
+    props: {
+      user: session.user,
+    },
+  };
 }
 
 export default MyApp;

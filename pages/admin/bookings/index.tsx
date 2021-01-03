@@ -1,12 +1,10 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
 import { useRouter } from 'next/router';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 
-import BikesTable from '../../../components/Table/BikesTable';
-import { useSession } from 'next-auth/client';
+import BookingsTable from '../../../components/Table/BookingsTable';
 
-const Dashboard = () => {
+const DashboardBookings = () => {
   const router = useRouter();
   const [session, loading] = useSession();
 
@@ -26,20 +24,12 @@ const Dashboard = () => {
     <Grid container justify="center">
       <Grid item xs={12}>
         <Typography variant="h2" component="h2" align="center">
-          Bikes
+          Bookings
         </Typography>
-        <Box>
-          <Button
-            color="primary"
-            onClick={() => router.push('/admin/bikes/new')}
-          >
-            New Bike
-          </Button>
-        </Box>
-        <BikesTable />
+        <BookingsTable />
       </Grid>
     </Grid>
   );
 };
 
-export default Dashboard;
+export default DashboardBookings;

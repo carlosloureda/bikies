@@ -5,124 +5,67 @@ import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ConfirmDialog from '../Dialogs/ConfirmDialog';
-
-let _rows = [
-  {
-    id: 1,
-    email: 'email1@mail.com',
-    lastName: 'Snow',
-    name: 'Jon',
-    role: 'manager',
-  },
-  {
-    id: 2,
-    email: 'email2@mail.com',
-    lastName: 'Lannister',
-    name: 'Cersei',
-    role: 'user',
-  },
-  {
-    id: 3,
-    email: 'email3@mail.com',
-    lastName: 'Lannister',
-    name: 'Jaime',
-    role: 'user',
-  },
-  {
-    id: 4,
-    email: 'email4@mail.com',
-    lastName: 'Stark',
-    name: 'Arya',
-    role: 'user',
-  },
-  {
-    id: 5,
-    email: 'email5@mail.com',
-    lastName: 'Targaryen',
-    name: 'Daenerys',
-    role: 'user',
-  },
-  {
-    id: 6,
-    email: 'email6@mail.com',
-    lastName: 'Melisandre',
-    name: null,
-    role: 'user',
-  },
-  {
-    id: 7,
-    email: 'email7@mail.com',
-    lastName: 'Clifford',
-    name: 'Ferrara',
-    role: 'user',
-  },
-  {
-    id: 8,
-    email: 'email8@mail.com',
-    lastName: 'Frances',
-    name: 'Rossini',
-    role: 'user',
-  },
-  {
-    id: 9,
-    email: 'email9@mail.com',
-    lastName: 'Roxie',
-    name: 'Harvey',
-    role: 'user',
-  },
-];
+import Api from '../../utils/api';
 
 const getColumns = (actionButtons) => [
-  // { field: 'id', headerName: 'ID', width: 70 },
   {
     field: 'email',
     headerName: 'Email',
     // type: 'email',
     width: 250,
   },
-  { field: 'name', headerName: 'First name', width: 130 },
+  { field: 'firstName', headerName: 'First name', width: 130 },
   { field: 'lastName', headerName: 'Last name', width: 130 },
   {
     field: 'role',
     headerName: 'Role',
-    width: 90,
-  },
-  {
-    field: 'create',
-    headerName: 'Create',
-    type: 'button',
-    width: 90,
+    width: 150,
   },
   {
     field: '',
     headerName: 'Actions',
     sortable: false,
-    width: 100,
+    width: 150,
     disableClickEventBubbling: true,
     renderCell: (params: CellParams) => {
       return actionButtons(params);
     },
   },
 ];
-export default function UserTable() {
-  const [rows, setRows] = React.useState([]);
+
+const PAGE_SIZE = 5;
+
+export default function UsersTable() {
+  const [users, setUsers] = React.useState([]);
+  const [count, setCount] = React.useState(0);
   const router = useRouter();
 
+  async function getUsers({ page = 1, pageSize = 5 }) {
+    const result = await Api.get(`api/users?page=${page}&pageSize=${pageSize}`);
+
+    // TODO: errors
+    if (result.success) {
+      result.data.users = result.data.users.map((d) => {
+        d.id = d._id;
+        return d;
+      });
+      setUsers(result.data.users);
+      setCount(result.data.count);
+    }
+  }
+
   React.useEffect(() => {
-    setRows(_rows);
+    getUsers({ page: 1, pageSize: 5 });
   }, []);
 
   const actionButtons = (params) => {
     const onDetailHandler = (e) => {
-      router.push(`/dashboard/users/${params.row.id}`);
+      router.push(`/admin/users/${params.row.id}`);
     };
 
     const onDeleteHandler = () => {
-      //TODO: delete
       setOpen(true);
       setId(params.row.id);
-      //  let _rows  = rows.filter(row =>  row.id !== params.row.id);
-      // setRows(_rows);
     };
 
     return (
@@ -152,9 +95,18 @@ export default function UserTable() {
 
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState(null);
-  const onDelete = () => {
-    let _rows = rows.filter((row) => row.id !== id);
-    setRows(_rows);
+
+  const onDelete = async () => {
+    const result = await Api.delete(`api/users/${id}`);
+    if (result.success) {
+      // let _users = users.filter((user) => user._id !== id);
+      // setUsers(_users);
+      getUsers({ page: 1, pageSize: PAGE_SIZE });
+    }
+  };
+
+  const handlePageChange = ({ page, pageSize, ...params }) => {
+    getUsers({ page, pageSize });
   };
 
   return (
@@ -167,7 +119,14 @@ export default function UserTable() {
       >
         Are you sure you want to delete this user?
       </ConfirmDialog>
-      <DataGrid rows={rows} columns={getColumns(actionButtons)} pageSize={5} />
+      <DataGrid
+        rows={users}
+        columns={getColumns(actionButtons)}
+        pageSize={PAGE_SIZE}
+        paginationMode="server"
+        rowCount={count}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }

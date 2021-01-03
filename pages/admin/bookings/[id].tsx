@@ -1,49 +1,48 @@
 import { useRouter } from 'next/router';
 import React from 'react';
+import UserForm from '../../../components/User/UserForm';
 import { Button, Grid, Typography } from '@material-ui/core';
 import ConfirmDialog from '../../../components/Dialogs/ConfirmDialog';
-import BikeForm from '../../../components/Bike/BikeForm';
+import UserBookings from '../../../components/Bookings/UserBookings';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Api from '../../../utils/api';
 import { useSession } from 'next-auth/client';
 
-const BikeDetail = () => {
-  const [session, loading] = useSession();
-
+const UserDetail = () => {
   const router = useRouter();
+  const [session, loading] = useSession();
   const { id } = router.query;
-
-  const [currentBike, setCurrentBike] = React.useState(null);
+  const [currentUser, setCurrentUser] = React.useState(null);
 
   const [mode, setMode] = React.useState('view');
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
-
   const [error, setError] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
 
-  const getBike = async () => {
-    const result = await Api.get(`api/bikes/${id}`);
+  const getUser = async () => {
+    const result = await Api.get(`api/users/${id}`);
     if (result.success) {
-      setCurrentBike(result.data);
+      setCurrentUser(result.data);
     } else {
-      setError('Error fetching bike');
-      console.error('Error fetching bike: ', result.error);
+      setError('Error fetching user');
+      console.error('Error fetching user: ', result.error);
     }
   };
 
   React.useEffect(() => {
-    if (id) getBike();
+    getUser();
   }, [id]);
 
   const onDelete = async () => {
     setDeleting(true);
-    const result = await Api.delete(`api/bikes/${id}`);
+    const result = await Api.delete(`api/users/${id}`);
     if (result.success) {
-      router.push('/admin/bikes');
+      router.push('/admin/users');
     } else {
       setDeleting(false);
-      setError('Error deleting bike');
-      console.error('Error deleting bike: ', result.error);
+      setError('Error deleting user');
+      console.error('Error deleting user: ', result.error);
     }
   };
 
@@ -69,7 +68,7 @@ const BikeDetail = () => {
       )}
       <Grid item xs={12}>
         <Typography variant="h2" component="h2" align="center">
-          Bike Detail
+          User Detail
         </Typography>
         {mode === 'view' && (
           <Grid
@@ -90,6 +89,7 @@ const BikeDetail = () => {
               variant="contained"
               color="secondary"
               onClick={() => setOpenDeleteModal(true)}
+              disabled={deleting}
             >
               Delete
             </Button>
@@ -112,20 +112,21 @@ const BikeDetail = () => {
             </Button>
           </Grid>
         )}
-        {currentBike && <BikeForm mode={mode} bike={currentBike} />}
+        {currentUser && <UserForm mode={mode} user={currentUser} />}
         {/* TODO: show user bookings */}
+        {/* <UserBookings /> */}
 
         <ConfirmDialog
-          title="Delete Bike?"
+          title="Delete User?"
           open={openDeleteModal}
           setOpen={setOpenDeleteModal}
           onConfirm={onDelete}
         >
-          Are you sure you want to delete this bike?
+          Are you sure you want to delete this user?
         </ConfirmDialog>
       </Grid>
     </Grid>
   );
 };
 
-export default BikeDetail;
+export default UserDetail;

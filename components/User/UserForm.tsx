@@ -1,112 +1,139 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import { makeStyles } from '@material-ui/core/styles';
 
-import {
-  TextField,
-  Button,
-  FormControl,
-  Box,
-  MenuItem,
-} from '@material-ui/core';
+import { TextField, Button, Grid, Box, MenuItem } from '@material-ui/core';
+import ReactHookFormSelect from '../atoms/ReactHookFormSelect';
+import Api from '../../utils/api';
 
 type Inputs = {
-  name: string;
+  _id: string;
+  firstName: string;
   lastName: string;
   email: string;
   role: string;
 };
 
-const UserForm = ({ mode, user = null }) => {
-  console.log('---> user: ', user);
-  const { register, handleSubmit, watch, errors, control } = useForm<Inputs>();
+const useStyles = makeStyles((theme) => ({
+  formRow: {
+    paddingBottom: 15,
+  },
+}));
+
+const UserForm = ({ mode, user }: { mode: string; user?: Inputs }) => {
+  const { register, handleSubmit, watch, errors, control } = useForm<Inputs>({
+    defaultValues: {
+      firstName: (user && user.firstName) || '',
+      lastName: (user && user.lastName) || '',
+      email: (user && user.email) || '',
+      role: (user && user.role) || 'user',
+    },
+  });
   const router = useRouter();
+  const classes = useStyles();
 
-  const onSubmitHandler = (data) => {
-    console.log('data: ', data);
+  const [error, setError] = React.useState('');
 
+  const onSubmitHandler = async (data) => {
+    setError('');
     if (!errors || !Object.values(errors).length) {
-      console.log('Submit form wth data', data);
-      // TODO: on user create redirect to id
-      const id = 3;
+      let result = null;
+
       if (mode === 'create') {
-        router.push(`/dashboard/users/${id}`);
+        result = await Api.post('api/users', JSON.stringify(data));
+      } else if (mode === 'edit') {
+        result = await Api.update(
+          `api/users/${user._id}`,
+          JSON.stringify(data)
+        );
+      }
+      if (!result.success) {
+        setError(result.error);
+      } else {
+        const updatedUser = result.data;
+        if (mode === 'create') {
+          router.push(`/admin/users/${updatedUser._id}`);
+        }
       }
     }
   };
-
   return (
-    <form onSubmit={handleSubmit((data) => onSubmitHandler(data))}>
-      <Box>
-        <TextField
-          name="name"
-          label="First Name"
-          inputRef={register({ required: true })}
-          error={errors.name}
-          helperText={errors && errors.name && errors.name.message}
-          disabled={mode === 'view'}
-          value={user && user.name}
-        />
-        <TextField
-          name="lastName"
-          label="Last Name"
-          inputRef={register({ required: true })}
-          error={errors && errors.lastName}
-          helperText={errors && errors.lastName && errors.lastName.message}
-          disabled={mode === 'view'}
-          value={user && user.lastName}
-        />
-      </Box>
+    <Grid container justify="center">
+      <form onSubmit={handleSubmit((data) => onSubmitHandler(data))}>
+        {error && (
+          <Alert severity="error">
+            <AlertTitle>Error</AlertTitle>
+            {error}
+          </Alert>
+        )}
+        <Box className={classes.formRow}>
+          <TextField
+            name="firstName"
+            label="First Name"
+            inputRef={register({ required: true })}
+            error={Boolean(errors.firstName)}
+            helperText={errors && errors.firstName && errors.firstName.message}
+            disabled={mode === 'view'}
+          />
+        </Box>
+        <Box className={classes.formRow}>
+          <TextField
+            name="lastName"
+            label="Last Name"
+            inputRef={register({ required: true })}
+            error={Boolean(errors.lastName)}
+            helperText={errors && errors.lastName && errors.lastName.message}
+            disabled={mode === 'view'}
+          />
+        </Box>
 
-      <Box>
-        <TextField
-          name="email"
-          label="Email" /*variant="outlined"*/
-          type="email"
-          inputRef={register({
-            required: true,
-            pattern: {
-              value: /S+@S+.S+/,
-              message: 'Entered value does not match email format',
-            },
-          })}
-          error={errors && errors.email}
-          helperText={errors && errors.email && errors.email.message}
-          disabled={mode === 'view'}
-          value={user && user.email}
-        />
-      </Box>
-      <FormControl /*variant="filled"*/ /*className={classes.formControl} */>
-        <TextField
-          select
-          required
-          // error={errors.role && errors.role}
-          // helperText={errors && errors.role && errors.role.message}
-          value={user && user.role}
-          id="role"
-          inputProps={{
-            inputRef: (ref) => {
-              if (!ref) return;
-              register({
-                name: 'role',
-                value: ref.value,
-              });
-            },
-          }}
-          disabled={mode === 'view'}
-        >
-          <MenuItem value="user">User</MenuItem>
-          <MenuItem value="manager">Manager</MenuItem>
-        </TextField>
-      </FormControl>
-      {mode !== 'view' && (
-        <FormControl>
-          <Button variant="contained" color="primary" type="submit">
-            Submit
-          </Button>
-        </FormControl>
-      )}
-    </form>
+        <Box className={classes.formRow}>
+          <TextField
+            name="email"
+            label="Email" /*variant="outlined"*/
+            type="email"
+            inputRef={register({
+              required: true,
+              // pattern: {
+              //   value: /S+@S+.S+/,
+              //   message: 'Entered value does not match email format',
+              // },
+            })}
+            error={Boolean(errors.email)}
+            helperText={errors && errors.email && errors.email.message}
+            disabled={mode === 'view'}
+          />
+        </Box>
+        <Box className={classes.formRow}>
+          <ReactHookFormSelect
+            id="role"
+            name="role"
+            label="Role"
+            control={control}
+            defaultValue={(user && user.role) || 'manager'}
+            disabled={mode === 'view'}
+          >
+            <MenuItem value="user">User</MenuItem>
+            <MenuItem value="manager">Manager</MenuItem>
+          </ReactHookFormSelect>
+        </Box>
+        {mode !== 'view' && (
+          <Box>
+            {/* <Box style={{ margin: '0 auto' }}> */}
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              style={{ margin: '0 auto' }}
+            >
+              Submit
+            </Button>
+          </Box>
+        )}
+      </form>
+    </Grid>
   );
 };
 

@@ -42,13 +42,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BikeCard({ bike }) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
-  const enableRating = true;
+  // const [value, setValue] = React.useState(0);
+  // const enableRating = true;
 
-  const setRating = (rating) => {
-    console.log('rating: ', rating);
-    setValue(rating);
-  };
+  // const setRating = (rating) => {
+  //   console.log('rating: ', rating);
+  //   setValue(rating);
+  // };
 
   const router = useRouter();
 
@@ -57,31 +57,20 @@ export default function BikeCard({ bike }) {
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            R
+            {(bike.model && bike.model.substring(0, 1).toUpperCase()) || 'B'}
           </Avatar>
         }
-        // action={
-        //   <IconButton aria-label="settings">
-        //     <MoreVertIcon />
-        //   </IconButton>
-        // }
-        title="Bike 1"
-        subheader="Available"
-        onClick={() => router.push(`/bikes/${bike}`)}
+        title={bike.model}
+        onClick={() => router.push(`/bikes/${bike._id}`)}
       />
       <CardMedia
         className={classes.media}
         image="/static/images/bike1.jpg"
-        title="Mountain bike 2"
+        title={bike.model}
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          The men's model of the Ortler Bozen with Diamant frame, its Bosch
-          Active Plus 400 E-drive and 9-speed gearbox is a 28-inch trekking
-          pedalec in its class. Consistent high quality equipment, thought
-          through to the last detail and always sovereign: the heart of the
-          Bosch Ortler Bozen Premium is its new, intelligent BOSCH electric
-          motor.
+          {bike.description}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
@@ -94,7 +83,7 @@ export default function BikeCard({ bike }) {
           justifyContent="space-between"
           alignItems="center"
         >
-          {enableRating && (
+          {/* {enableRating && (
             <Rating
               name="simple-controlled"
               value={value}
@@ -103,8 +92,9 @@ export default function BikeCard({ bike }) {
               }}
             />
           )}
-          {!enableRating && <Rating name="read-only" value={value} readOnly />}
-          <Link href={`/bikes/${bike}`}>
+          {!enableRating && <Rating name="read-only" value={value} readOnly />} */}
+          <Rating name="read-only" value={bike.rating} readOnly />
+          <Link href={`/bikes/${bike._id}`}>
             <IconButton aria-label="book">
               <ShoppingCartIcon />
             </IconButton>
