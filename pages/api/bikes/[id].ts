@@ -15,9 +15,8 @@ export default async function handler(
   await dbConnect();
 
   switch (method) {
-    case 'GET' /* Get a model by its ID */:
+    case 'GET':
       try {
-        console.log('id: ', id);
         const bike = await Bike.findOne({ _id: id });
         if (!bike) {
           return res.status(400).json({ success: false });

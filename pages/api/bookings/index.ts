@@ -40,8 +40,6 @@ export default async function handler(
 
         // TODO: dates to be booked!
 
-        console.log('req.query: ', req.query);
-
         const page = (query.page && parseInt(query.page as string) - 1) || 0;
         const limit =
           (query.pageSize && parseInt(query.pageSize as string)) || 0;
@@ -58,7 +56,6 @@ export default async function handler(
           .populate(['user', 'bike'])
           .skip(skip)
           .limit(limit);
-        console.log('bookings: ', bookings);
         const count = await Booking.count(searchQuery);
 
         res.status(200).json({
@@ -74,18 +71,14 @@ export default async function handler(
       break;
     case 'POST':
       try {
-        console.log('--> the body is: ', req.body);
         const bookingData = JSON.parse(req.body);
 
         const user = await User.findOne({ _id: bookingData.user });
         const bike = await Bike.findOne({ _id: bookingData.bike });
         bookingData.user = user;
         bookingData.bike = bike;
-        console.log('bookingData: ', bookingData);
 
-        // const booking = await Booking.create(JSON.parse(req.body));
         const booking = await Booking.create(bookingData);
-        console.log('--> booking: ', booking);
 
         res.status(201).json({ success: true, data: booking });
       } catch (error) {

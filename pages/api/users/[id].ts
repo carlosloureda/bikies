@@ -17,7 +17,6 @@ export default async function handler(
   switch (method) {
     case 'GET' /* Get a model by its ID */:
       try {
-        console.log('id_: ', id);
         const user = await User.findOne({ _id: id });
         if (!user) {
           return res.status(400).json({ success: false });
@@ -53,9 +52,8 @@ export default async function handler(
       }
       break;
 
-    case 'DELETE' /* Delete a model by its ID */:
+    case 'DELETE':
       try {
-        console.log('** id: ', id);
         const deletedUser = await User.deleteOne({ _id: id });
         if (!deletedUser) {
           return res.status(400).json({ success: false });

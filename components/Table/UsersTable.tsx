@@ -42,7 +42,6 @@ export default function UsersTable() {
 
   async function getUsers({ page = 1, pageSize = 5 }) {
     const result = await Api.get(`api/users?page=${page}&pageSize=${pageSize}`);
-    console.log('result: ', result);
 
     // TODO: errors
     if (result.success) {
@@ -52,7 +51,6 @@ export default function UsersTable() {
       });
       setUsers(result.data.users);
       setCount(result.data.count);
-    } else {
     }
   }
 

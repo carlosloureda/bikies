@@ -112,7 +112,6 @@ const UserBookings = ({ user }) => {
     const result = await Api.get(
       `api/bookings?page=${page}&pageSize=${pageSize}&user=${user._id}`
     );
-    console.log('result: ', result);
 
     if (result.success) {
       result.data.bookings = result.data.bookings.map((d) => {

@@ -81,7 +81,6 @@ const Booking = () => {
   }, [pickupDate, dropoffDate]);
 
   const onSearch = () => {
-    console.log('on search, selectedFilters: ', selectedFilters);
     let url = `api/bikes?pickupDate=${pickupDate}&dropoffDate=${dropoffDate}`;
     if (selectedFilters.location) {
       url += `&location=${selectedFilters.location}`;

@@ -102,7 +102,6 @@ const Bike = () => {
       startDate: pickupDate,
       endDate: dropoffDate,
     };
-    console.log('--> booking: ', booking);
 
     const result = await Api.post('api/bookings', booking);
     if (result.success) {

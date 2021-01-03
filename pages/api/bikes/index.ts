@@ -37,9 +37,6 @@ export default async function handler(
         // }
 
         // TODO: dates to be booked!
-
-        console.log('holas');
-
         const page = (query.page && parseInt(query.page as string) - 1) || 0;
         const limit =
           (query.pageSize && parseInt(query.pageSize as string)) || 0;
@@ -53,8 +50,6 @@ export default async function handler(
         if (query.rating) searchQuery.rating = query.rating;
 
         const bikes = await Bike.find(searchQuery).skip(skip).limit(limit);
-
-        console.log('bikes: ', bikes);
         const count = await Bike.count(searchQuery);
 
         res.status(200).json({

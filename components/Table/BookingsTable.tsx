@@ -109,7 +109,6 @@ export default function UsersTable() {
     const result = await Api.get(
       `api/bookings?page=${page}&pageSize=${pageSize}`
     );
-    console.log('result: ', result);
 
     // TODO: errors
     if (result.success) {
@@ -119,7 +118,6 @@ export default function UsersTable() {
       });
       setBookings(result.data.bookings);
       setCount(result.data.count);
-    } else {
     }
   }
 
@@ -152,8 +150,6 @@ export default function UsersTable() {
   const [booking, setBooking] = React.useState(null);
 
   const onCancel = async () => {
-    console.log('cancel!, ', booking);
-
     booking.state = 'cancelled';
     const result = await Api.update(`api/bookings/${booking._id}`, booking);
     if (result.success) {

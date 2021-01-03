@@ -95,15 +95,12 @@ const BikeForm = ({ mode, bike }: { mode: string; bike?: Inputs }) => {
       data.image = 'imagePath';
 
       if (mode === 'create') {
-        console.log('--> bike: ', bike);
         result = await Api.post(`api/bikes`, JSON.stringify(data));
       } else if (mode === 'edit') {
-        console.log('-1122-> bike: ', bike);
         result = await Api.update(
           `api/bikes/${bike._id}`,
           JSON.stringify(data)
         );
-        console.log('-1122-> bike: ', result);
       }
 
       if (!result.success) {
@@ -118,7 +115,7 @@ const BikeForm = ({ mode, bike }: { mode: string; bike?: Inputs }) => {
     setSending(false);
   };
 
-  const onFileLoad = (e, file) => console.log(e.target.result, file.name);
+  // const onFileLoad = (e, file) => console.log(e.target.result, file.name);
 
   const classes = useStyles();
   const [error, setError] = React.useState('');
