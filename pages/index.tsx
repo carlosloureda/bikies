@@ -139,18 +139,11 @@ const Booking = () => {
       <Box
         style={{
           backgroundColor: '#835990',
-          // borderRadius: '25px',
           padding: '3rem 2rem',
           marginBottom: '2rem',
-          // color: 'white',
         }}
       >
-        <Grid
-          container
-          justify="space-around"
-          className={classes.searchForm}
-          // style={{ width: '60%', margin: '0 auto', color: 'white' }}
-        >
+        <Grid container justify="space-around" className={classes.searchForm}>
           <DatetimeSearch
             pickupDate={pickupDate}
             setPickupDate={setPickupDate}

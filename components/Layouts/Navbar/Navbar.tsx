@@ -8,6 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import { Link } from '@material-ui/core';
 
 const styles = (theme) => ({
   grow: {
@@ -27,6 +28,9 @@ const styles = (theme) => ({
     // [theme.breakpoints.up("md")]: {
     display: 'flex',
     // }
+  },
+  link: {
+    textDecoration: 'none',
   },
   //   sectionMobile: {
   //     display: "flex",
@@ -82,9 +86,11 @@ const Navbar = ({ classes, showMenu = true, openDrawerHandler, ...props }) => {
               <MenuIcon />
             </IconButton>
           )}
-          <Typography className={classes.title} variant="h6" noWrap>
-            Bikies
-          </Typography>
+          <Link href="/" color="inherit" className={classes.link}>
+            <Typography className={classes.title} variant="h6" noWrap>
+              Bikies
+            </Typography>
+          </Link>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton

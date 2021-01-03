@@ -10,7 +10,6 @@ import {
   Divider,
   Link,
 } from '@material-ui/core';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import PeopleIcon from '@material-ui/icons/People';
 import DirectionsBikeIcon from '@material-ui/icons/DirectionsBike';
 import { useRouter } from 'next/router';
@@ -22,13 +21,16 @@ const styles = (theme) => ({
   fullList: {
     width: 'auto',
   },
+  active: {
+    backgroundColor: '#3f51b5',
+    color: 'white',
+  },
 });
 
 const DrawerMenu = ({ open, toggleDrawerHandler, classes }) => {
   const router = useRouter();
 
   const goTo = (url) => {
-    console.log('url: ', url);
     router.push(url);
   };
 
@@ -39,39 +41,50 @@ const DrawerMenu = ({ open, toggleDrawerHandler, classes }) => {
       onClick={toggleDrawerHandler}
       onKeyDown={toggleDrawerHandler}
     >
-      {/* <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List> */}
-      <Typography variant="h3" color="textSecondary" component="h3">
+      <Typography
+        variant="h3"
+        style={{
+          backgroundColor: '#3f51b5',
+          color: 'white',
+          padding: '0.25rem 1rem',
+        }}
+      >
         Bikies
       </Typography>
       <Divider />
       <List>
-        <ListItem button onClick={() => goTo('/dashboard/users')}>
+        <ListItem
+          button
+          onClick={() => goTo('/admin/users')}
+          className={router.pathname === '/admin/users' ? classes.active : ''}
+        >
           <ListItemIcon>
             <PeopleIcon />
           </ListItemIcon>
           <ListItemText primary={'Users'} />
         </ListItem>
-        <ListItem button onClick={() => goTo('/dashboard/bikes')}>
+        <ListItem
+          button
+          onClick={() => goTo('/admin/bikes')}
+          className={router.pathname === '/admin/bikes' ? classes.active : ''}
+        >
           <ListItemIcon>
             <DirectionsBikeIcon />
           </ListItemIcon>
           <ListItemText primary={'Bikes'} />
         </ListItem>
-        <ListItem button onClick={() => goTo('/dashboard/bookings')}>
+        {/* <ListItem
+          button
+          onClick={() => goTo('/admin/bookings')}
+          className={
+            router.pathname === '/admin/bookings' ? classes.active : ''
+          }
+        >
           <ListItemIcon>
             <ConfirmationNumberIcon />
           </ListItemIcon>
           <ListItemText primary={'Bookings'} />
-        </ListItem>
+        </ListItem> */}
       </List>
     </div>
   );

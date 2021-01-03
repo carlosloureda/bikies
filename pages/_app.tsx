@@ -9,8 +9,6 @@ import AdminLayout from '../components/Layouts/AdminLayout';
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
-  console.log('pathname: ', router.pathname);
-
   React.useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
@@ -21,7 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const { pathname } = router;
 
-  if (pathname.startsWith('/dashboard/')) {
+  if (pathname.startsWith('/admin/')) {
     return (
       <AdminLayout>
         <Component {...pageProps}></Component>

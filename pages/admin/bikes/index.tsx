@@ -3,7 +3,6 @@ import React from 'react';
 import { Button } from '@material-ui/core';
 import { useRouter } from 'next/router';
 
-import AdminDashboard from '../../../components/Layouts/AdminDashboard';
 import BikesTable from '../../../components/Table/BikesTable';
 
 const Dashboard = () => {

@@ -93,7 +93,7 @@ const Bike = () => {
           lg={8}
           sm={8}
           xs={12}
-          justify="flex-start"
+          // justify="flex-start"
           className={classes.dateSearch}
         >
           <DatetimeSearch
@@ -106,16 +106,7 @@ const Bike = () => {
         </Grid>
 
         <Grid item container className={classes.bikeContainer} justify="center">
-          <Grid
-            item
-            xs={9}
-            className={classes.info}
-            // style={{
-            //   padding: '1rem 1rem',
-            //   // backgroundColor: 'yellow',
-            //   // paddingLeft: '1rem',
-            // }}
-          >
+          <Grid item xs={9} className={classes.info}>
             <Typography variant="subtitle1" color="textSecondary">
               Orbea TC-4W
             </Typography>
@@ -146,13 +137,7 @@ const Bike = () => {
               Book
             </Button>
           </Grid>
-          <Grid
-            item
-            xs={6}
-            alignContent="center"
-            justify="center"
-            className={classes.imageContainer}
-          >
+          <Grid item xs={6} className={classes.imageContainer}>
             <Image src="/static/images/bike1.jpg" />
           </Grid>
           <Grid item xs={9} className={classes.description}>
